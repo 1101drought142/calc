@@ -1,4 +1,21 @@
+.calculator {
+    width: 100%;
+    max-width: 1200px;
+}
+
 .calc_flex {
     display: flex;
-    flex-basis: 1 1;
+}
+.calc_flex > * {
+    flex-basis: 50%;
+}
+
+.top_left_calc {
+    display: flex;
+}
+
+.calc_heading {
+    font-size: 32px;
+    font-weight: 700;
+
 }
