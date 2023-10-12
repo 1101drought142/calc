@@ -5,11 +5,19 @@
 
 .calc_flex {
     display: flex;
+    gap: 20px;
 }
 .calc_flex > * {
     flex-basis: 50%;
 }
-
+.top_left_calc > * {
+    flex: 1;
+}
+.calc_img {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
 .top_left_calc {
     display: flex;
 }
@@ -17,5 +25,66 @@
 .calc_heading {
     font-size: 32px;
     font-weight: 700;
-
 }
+
+.progress_text {
+    font-size: 16px;
+}
+
+.progress_count {
+    font-size: 18px;
+    color: #CB11AB;
+}
+
+
+.bar_line {
+    height: 8px;
+    border-radius: 10px;
+}
+.progress_bar_line {
+    background: #DBDBDB;
+    width: 100%;
+    margin-top: 10px;
+}
+.actual_progress {
+    background: #CB11AB;
+    width: 22%;
+}
+
+.step_heading {
+    font-size: 18px;
+    opacity: 0.6;
+    max-width: 360px;
+}
+
+.calc_buttons_row {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+
+.cart_variant_button {
+    flex: 45%;
+    border: 1px solid #CB11AB;
+    background: #F2F2F2;
+    border-radius: 5px;
+    display: flex;
+    padding: 0 20px;
+    box-sizing: border-box;
+    max-width: 45%;
+    justify-content: space-between;
+}
+
+.move_buttons_row {
+    display: flex;
+    gap: 20px;
+}
+.move_button {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
