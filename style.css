@@ -5,10 +5,11 @@
 
 .calc_flex {
     display: flex;
+    flex-wrap: wrap;
     gap: 20px;
 }
 .calc_flex > * {
-    flex-basis: 50%;
+    flex-basis: 45%;
 }
 .top_left_calc > * {
     flex: 1;
@@ -114,6 +115,7 @@
 .two_list_blocks > ul {
     list-style-type: none;
     padding-left: 0px;
+    flex: 50%;
 }
 .two_list_blocks > ul > li {
     max-width: 250px;
@@ -175,6 +177,7 @@
 .result_calc_heading {
     display: flex;
     justify-content: space-between;
+    flex-wrap: wrap;
 }
 
 .destination_block_inner {
@@ -218,4 +221,16 @@
 }
 .result_row > div {
     color: inherit;
+}
+
+@media (max-width: 600px) {
+    .calc_right_part {
+        flex: 100%;
+    }
+    .dest_block {
+        padding: 10px 30px;
+    }
+    .background_calc_result {
+        width: 90%;
+    }
 }
