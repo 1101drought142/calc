@@ -74,11 +74,13 @@
     box-sizing: border-box;
     max-width: 45%;
     justify-content: space-between;
+    cursor: pointer;
 }
 
 .move_buttons_row {
     display: flex;
     gap: 20px;
+    margin-top: 20px;
 }
 .move_button {
     flex: 1;
@@ -86,5 +88,19 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
+    height: 50px;
+    font-size: 18px;
+    cursor: pointer;
 }
 
+.prev {
+    border-radius: 5px;
+    border: 1px solid #CB11AB;
+    color: #666;
+}
+
+.next {
+    border-radius: 5px;
+    background: linear-gradient(90deg, #CB11AB 0%, #481173 100%);
+    color: #FFF;
+}
