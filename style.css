@@ -11,6 +11,13 @@
 .calc_flex > * {
     flex-basis: 45%;
 }
+.calc_right_part {
+    display: none;
+}
+
+.calc_right_part__active {
+    display: block;
+}
 .top_left_calc > * {
     flex: 1;
 }
