@@ -228,6 +228,7 @@
     font-size: 32px;
     font-style: normal;
     font-weight: 700;
+    margin-top: 10px;
 }
 
 @media (max-width: 600px) {
