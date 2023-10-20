@@ -104,3 +104,38 @@
     background: linear-gradient(90deg, #CB11AB 0%, #481173 100%);
     color: #FFF;
 }
+
+.two_list_blocks {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+.two_list_blocks > ul {
+    list-style-type: none;
+    padding-left: 0px;
+}
+.two_list_blocks > ul > li {
+    max-width: 250px;
+}
+
+.two_list_blocks > ul > li > span {
+    color: #CB11AB;
+}
+
+.one_row_input {
+    width: 100%;
+    border-radius: 5px;
+    border: 1px solid #CB11AB;
+    background: #F2F2F2;
+    padding: 15px 10px;
+    font-size: 18px;
+}
+
+.calc_buttons_price_block_row {
+    display: flex;
+    justify-content: space-between;
+}
+.calc_buttons_price_block {
+    display: flex;
+    flex-direction: column;
+}
