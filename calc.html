@@ -82,18 +82,18 @@
             <input type="text" placeholder="Введите кол.во коробов для отправки" class="one_row_input">
             <div class="two_list_blocks">
                 <ul>
-                    <li> <span>1</span> коробка - <span> 500 руб  </span></li>
-                    <li> <span>2</span> коробки - <span> 1000 руб </span></li>
-                    <li> <span>3</span> коробки - <span> 1500 руб </span></li>
-                    <li> <span>4</span> коробки - <span> 2000 руб </span></li>
-                    <li> <span>5</span> коробок - <span> 2500 руб </span></li>
-                    <li> <span>6</span> коробок - <span> 3000 руб </span></li>
+                    <li> <span class="pink_color">1</span> коробка - <span class="pink_color"> 500 руб  </span></li>
+                    <li> <span class="pink_color">2</span> коробки - <span class="pink_color"> 1000 руб </span></li>
+                    <li> <span class="pink_color">3</span> коробки - <span class="pink_color"> 1500 руб </span></li>
+                    <li> <span class="pink_color">4</span> коробки - <span class="pink_color"> 2000 руб </span></li>
+                    <li> <span class="pink_color">5</span> коробок - <span class="pink_color"> 2500 руб </span></li>
+                    <li> <span class="pink_color">6</span> коробок - <span class="pink_color"> 3000 руб </span></li>
                 </ul>
                 <ul>
-                    <li> <span>7</span> коробок - <span>3000 руб</span> </li>
-                    <li> <span>8</span> коробок - <span>3250 руб</span> (<span>250 руб</span> паллетирование)</li>
-                    <li> <span>9</span> коробок - <span>3250 руб</span></li>
-                    <li> <span>10-16</span> коробок - <span>3000 руб</span> (<span>+500 руб</span> паллета/паллетирование)</li>
+                    <li> <span class="pink_color">7</span> коробок - <span class="pink_color">3000 руб</span> </li>
+                    <li> <span class="pink_color">8</span> коробок - <span class="pink_color">3250 руб</span> (<span class="pink_color">250 руб</span> паллетирование)</li>
+                    <li> <span class="pink_color">9</span> коробок - <span class="pink_color">3250 руб</span></li>
+                    <li> <span class="pink_color">10-16</span> коробок - <span class="pink_color">3000 руб</span> (<span class="pink_color">+500 руб</span> паллета/паллетирование)</li>
 
                 </ul>
             </div>
@@ -150,12 +150,115 @@
             </div>
             <div class="calc_buttons_price_block_row">
                 <div class="calc_buttons_price_block">
-
+                    <div class="sub_head_calc">
+                        Цена за 1 паллеты по весу:
+                    </div>
+                    <div class="sub_block_calc">
+                        <p>
+                            Москва и Алексин
+                        </p>
+                        <ul>
+                            <li>
+                                <span class="pink_color">0-200</span> кг. – <span class="pink_color">3000 р</span>
+                            </li>
+                            <li>
+                                <span class="pink_color">200-300</span> кг. – <span class="pink_color">3500 р</span>
+                            </li>
+                            <li>
+                                <span class="pink_color">300-400</span> кг. – <span class="pink_color">4500 р</span>
+                            </li>
+                            <li>
+                                <span class="pink_color">400-500</span> кг. – <span class="pink_color">5000 р</span>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
                 <div class="calc_buttons_price_block">
-                    
+                    <div class="sub_head_calc">
+                        Цена за 1 паллеты по весу:
+                    </div>
+                    <div class="sub_block_calc">
+                        <p>
+                            Краснодар, Санкт-Петербург
+                        </p>
+                        <ul>
+                            <li>
+                                <span class="pink_color">0-200</span> кг. – <span class="pink_color">6000 р</span>, <span class="pink_color">5500 р</span>
+                            </li>
+                            <li>
+                                <span class="pink_color">+100 кг. = 500 рублей (для каждого направления)</span>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
+            <div class="move_buttons_row no_margin">
+                <div class="move_button prev" id="prev">
+                    Назад
+                </div>
+                <div class="move_button next" id="next">
+                    Далее
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="calc_flex">
+        <div class="calc_left_part">
+            <div class="top_left_calc">
+                <h3 class="calc_heading">
+                    Расчет стоимости <br> перевозки грузов
+                </h3>
+                <div class="calc_img">
+                    <img src="img/calc_image.png" alt="Фото калькулятора">
+                </div>
+            </div>
+            <div class="calc_progress_bar">
+                <div class="progress_text">
+                    Готово: <span class="progress_count"> <span id="js_progress_count">20</span>% </span>
+                </div>
+                <div class="progress_bar_line bar_line">
+                    <div id="js_progres_perc" class="actual_progress bar_line"></div>
+                </div>
+            </div>
+        </div>
+        <div class="calc_right_part">
+            <div class="result_calc_heading">
+                <h3 class="step_heading">
+                    Ваш рассчет
+                </h3>
+                <div class="destination_block_inner">
+                    <div class="dest_block">
+                        Москва
+                    </div>
+                    <img src="img/arrow.svg" alt="" class="arrow">
+                    <div class="dest_block">
+                        Краснодар
+                    </div> 
+                </div>
+            </div>
+            <div class="background_calc_result">
+                <div class="result_row calc_heading_row">
+                    <div class="row_name">Форма отгрузки</div>
+                    <div class="row_value">Короб</div>
+                </div>
+                <div class="result_row result_calc_border_bottom">
+                    <div class="row_name">Форма отгрузки</div>
+                    <div class="row_value">Короб</div>
+                </div>
+                <div class="result_row ">
+                    <div class="row_name">Форма отгрузки</div>
+                    <div class="row_value">Короб</div>
+                </div>
+                <div class="result_row ">
+                    <div class="row_name">Форма отгрузки</div>
+                    <div class="row_value">Короб</div>
+                </div>
+                <div class="result_row ">
+                    <div class="row_name">Форма отгрузки</div>
+                    <div class="row_value">Короб</div>
+                </div>
+            </div>
+            
             <div class="move_buttons_row">
                 <div class="move_button prev" id="prev">
                     Назад

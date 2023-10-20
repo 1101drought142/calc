@@ -55,6 +55,7 @@
     font-size: 18px;
     opacity: 0.6;
     max-width: 360px;
+    margin-top: 0px;
 }
 
 .calc_buttons_row {
@@ -118,7 +119,7 @@
     max-width: 250px;
 }
 
-.two_list_blocks > ul > li > span {
+.pink_color {
     color: #CB11AB;
 }
 
@@ -134,8 +135,87 @@
 .calc_buttons_price_block_row {
     display: flex;
     justify-content: space-between;
+    margin-top: 10px;
 }
 .calc_buttons_price_block {
     display: flex;
     flex-direction: column;
+}
+
+.sub_head_calc {
+    padding-bottom: 5px;
+    border-bottom: 1px solid black;
+}
+
+.sub_block_calc {
+    display: flex;
+    justify-content: space-between;
+}
+
+.sub_block_calc > ul {
+    list-style-type: none;
+    padding-left: 0px;
+    font-size: 13px;
+}
+
+.sub_block_calc > ul {
+    width: 70%;
+}
+.calc_buttons_price_block {
+    flex: 50%;
+}
+
+.no_margin {
+    margin: 0;
+}
+.calc_flex {
+    margin-bottom: 50px;
+}
+
+.result_calc_heading {
+    display: flex;
+    justify-content: space-between;
+}
+
+.destination_block_inner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+.dest_block {
+    color: white;
+    border-radius: 5px;
+    background: #CB11AB;
+    padding: 10px 50px;
+}
+.background_calc_result {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-radius: 5px;
+    border: 1px solid #AD72F8;
+    background: #F2F2F2;
+    width: 100%;
+    padding-top: 10px;
+    padding-left: 15px; padding-right: 15px;
+    padding-bottom: 20px;
+    margin-top: 20px;
+    max-width: 550px;
+}
+
+.result_row {
+    display: flex;
+    justify-content: space-between;
+    color: #0000005e;
+}
+.calc_heading_row {
+    color: black;
+}
+.result_calc_border_bottom {
+    border-bottom: 1px solid #AD72F8;
+    padding-bottom: 10px;
+}
+.result_row > div {
+    color: inherit;
 }
