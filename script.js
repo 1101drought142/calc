@@ -28,9 +28,18 @@ var prev_buttons = document.querySelectorAll(".prev");
 var dynamic_bodies = document.querySelectorAll(".calc_right_part");
 
 function calc_percent() {
-    
-}
+    let tabs_length = calc_data["tabs"].length;
+    let curent_tab = get_active_tab_index() + 1;
 
+    let percent = Math.round( curent_tab / tabs_length * 100 );
+    return percent;
+}
+function set_percent() {
+    let percent = calc_percent();
+
+    document.getElementById("js_progres_perc").style.width = percent + "%";
+    document.getElementById("js_progress_count").textContent = percent;
+}
 function get_input_values(input_list){
     let res_values = [];
     input_list.forEach( function (input) {
@@ -75,7 +84,7 @@ function move_next_slide(){
     if (calc_data["tabs"].length - 1 == active){
 
     } else {
-        console.log(get_step_value())
+        
         if (get_step_value().length != 0) {
             calc_data["tabs"][active]["active"] = false;
             calc_data["tabs"][active + 1]["active"] = true;
@@ -87,6 +96,7 @@ function move_next_slide(){
                     tab.classList.remove("calc_right_part__active");
                 }
             })
+            set_percent();
             document.getElementById("error_span").textContent = ""; 
         } else {
             document.getElementById("error_span").textContent = "Не выбрана опция";
@@ -108,6 +118,7 @@ function move_last_slide(){
                 tab.classList.remove("calc_right_part__active");
             }
         }) 
+        set_percent();
     }
 }
 
