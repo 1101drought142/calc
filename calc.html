@@ -7,6 +7,7 @@
                 <h3 class="calc_heading">
                     Расчет стоимости <br> перевозки грузов
                 </h3>
+                <span class="error_span" id="error_span"></span>
                 <div class="calc_img">
                     <img src="img/calc_image.png" alt="Фото калькулятора">
                 </div>
@@ -27,7 +28,7 @@
             <div class="calc_buttons_row">
                 <label class="cart_variant_button">
                     <p>Казань</p>
-                    <input type="radio" value="200">
+                    <input type="radio" value="200" name="from">
                 </label>
             </div>
             <div class="move_buttons_row">
@@ -46,27 +47,27 @@
             <div class="calc_buttons_row">
                 <label class="cart_variant_button">
                     <p>Санкт-Петербург</p>
-                    <input type="radio">
+                    <input type="radio" name="where" value="10">
                 </label>
                 <label class="cart_variant_button">
                     <p>Краснодар</p>
-                    <input type="radio">
+                    <input type="radio" name="where" value="10">
                 </label>
                 <label class="cart_variant_button">
                     <p>Коледино</p>
-                    <input type="radio">
+                    <input type="radio" name="where" value="10">
                 </label>
                 <label class="cart_variant_button">
                     <p>Электросталь</p>
-                    <input type="radio">
+                    <input type="radio" name="where" value="10">
                 </label>
                 <label class="cart_variant_button">
                     <p>Алексин</p>
-                    <input type="radio">
+                    <input type="radio" name="where" value="10">
                 </label>
                 <label class="cart_variant_button">
                     <p>Москва (Я.М, Озон, Wb)</p>
-                    <input type="radio">
+                    <input type="radio" name="where" value="10">
                 </label>
             </div>
             <div class="move_buttons_row">
@@ -82,7 +83,7 @@
             <h3 class="step_heading">
                 Откуда будете производить отправку товара?
             </h3>
-            <input type="text" placeholder="Введите кол.во коробов для отправки" class="one_row_input">
+            <input type="text" placeholder="Введите кол.во коробов для отправки" class="one_row_input" name="box_count">
             <div class="two_list_blocks">
                 <ul>
                     <li> <span class="pink_color">1</span> коробка - <span class="pink_color"> 500 руб  </span></li>
@@ -116,19 +117,19 @@
             <div class="calc_buttons_row">
                 <label class="cart_variant_button">
                     <p>Санкт-Петербург</p>
-                    <input type="checkbox">
+                    <input type="checkbox" name="additional[]">
                 </label>
                 <label class="cart_variant_button">
                     <p>Коледино</p>
-                    <input type="checkbox">
+                    <input type="checkbox" name="additional[]">
                 </label>
                 <label class="cart_variant_button">
                     <p>Краснодар</p>
-                    <input type="checkbox">
+                    <input type="checkbox" name="additional[]">
                 </label>
                 <label class="cart_variant_button">
                     <p>Краснодар</p>
-                    <input type="checkbox">
+                    <input type="checkbox" name="additional[]"> 
                 </label>
             </div>
             <div class="calc_buttons_price_block_row">
