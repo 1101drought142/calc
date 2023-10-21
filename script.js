@@ -12,6 +12,9 @@ var calc_data = {
         {
             active : false,
         },
+        {
+            active : false,
+        },
     ]
 }
 

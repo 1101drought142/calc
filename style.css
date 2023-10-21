@@ -16,7 +16,8 @@
 }
 
 .calc_right_part__active {
-    display: block;
+    display: flex;
+    flex-direction: column;
 }
 .top_left_calc > * {
     flex: 1;
@@ -89,7 +90,7 @@
 .move_buttons_row {
     display: flex;
     gap: 20px;
-    margin-top: 20px;
+    margin-top: auto;
 }
 .move_button {
     flex: 1;
