@@ -28,7 +28,7 @@
             <div class="calc_buttons_row">
                 <label class="cart_variant_button">
                     <p>Казань</p>
-                    <input type="radio" value="200" name="from">
+                    <input type="radio" value="kazan" name="from">
                 </label>
             </div>
             <div class="move_buttons_row">
@@ -46,28 +46,28 @@
             </h3>
             <div class="calc_buttons_row">
                 <label class="cart_variant_button">
-                    <p>Санкт-Петербург</p>
-                    <input type="radio" name="where" value="10">
+                    <p>Екатеринбург</p>
+                    <input type="radio" name="where" value="ekaterinburg">
+                </label>
+                <label class="cart_variant_button">
+                    <p>Новосибирск</p>
+                    <input type="radio" name="where" value="novosibirsk">
+                </label>
+                <label class="cart_variant_button">
+                    <p>Шушары</p>
+                    <input type="radio" name="where" value="shushari">
                 </label>
                 <label class="cart_variant_button">
                     <p>Краснодар</p>
-                    <input type="radio" name="where" value="10">
+                    <input type="radio" name="where" value="krasnodar">
                 </label>
                 <label class="cart_variant_button">
-                    <p>Коледино</p>
-                    <input type="radio" name="where" value="10">
+                    <p>Коледино, Электросталь</p>
+                    <input type="radio" name="where" value="mixed">
                 </label>
                 <label class="cart_variant_button">
-                    <p>Электросталь</p>
-                    <input type="radio" name="where" value="10">
-                </label>
-                <label class="cart_variant_button">
-                    <p>Алексин</p>
-                    <input type="radio" name="where" value="10">
-                </label>
-                <label class="cart_variant_button">
-                    <p>Москва (Я.М, Озон, Wb)</p>
-                    <input type="radio" name="where" value="10">
+                    <p>Тула, Белые столбы, Софьино (ОЗ, ЯМ)</p>
+                    <input type="radio" name="where" value="mixed">
                 </label>
             </div>
             <div class="move_buttons_row">
@@ -83,21 +83,21 @@
             <h3 class="step_heading">
                 Откуда будете производить отправку товара?
             </h3>
-            <input type="text" placeholder="Введите кол.во коробов для отправки" class="one_row_input" name="box_count">
+            <input type="int" placeholder="Введите кол.во коробов для отправки" class="one_row_input" name="box_count">
             <div class="two_list_blocks">
                 <ul>
-                    <li> <span class="pink_color">1</span> коробка - <span class="pink_color"> 500 руб  </span></li>
-                    <li> <span class="pink_color">2</span> коробки - <span class="pink_color"> 1000 руб </span></li>
-                    <li> <span class="pink_color">3</span> коробки - <span class="pink_color"> 1500 руб </span></li>
-                    <li> <span class="pink_color">4</span> коробки - <span class="pink_color"> 2000 руб </span></li>
-                    <li> <span class="pink_color">5</span> коробок - <span class="pink_color"> 2500 руб </span></li>
-                    <li> <span class="pink_color">6</span> коробок - <span class="pink_color"> 3000 руб </span></li>
+                    <li> <span class="pink_color">1</span> коробка - <span class="pink_color"> <span data-price data-price_count="1">500</span> руб  </span></li>
+                    <li> <span class="pink_color">2</span> коробки - <span class="pink_color"> <span data-price data-price_count="2" >1000</span> руб </span></li>
+                    <li> <span class="pink_color">3</span> коробки - <span class="pink_color"> <span data-price data-price_count="3" >1500</span> руб </span></li>
+                    <li> <span class="pink_color">4</span> коробки - <span class="pink_color"> <span data-price data-price_count="4" >2000</span> руб </span></li>
+                    <li> <span class="pink_color">5</span> коробок - <span class="pink_color"> <span data-price data-price_count="5" >2500</span> руб </span></li>
+                    <li> <span class="pink_color">6</span> коробок - <span class="pink_color"> <span data-price data-price_count="6" >3000</span> руб </span></li>
                 </ul>
                 <ul>
-                    <li> <span class="pink_color">7</span> коробок - <span class="pink_color">3000 руб</span> </li>
-                    <li> <span class="pink_color">8</span> коробок - <span class="pink_color">3250 руб</span> (<span class="pink_color">250 руб</span> паллетирование)</li>
-                    <li> <span class="pink_color">9</span> коробок - <span class="pink_color">3250 руб</span></li>
-                    <li> <span class="pink_color">10-16</span> коробок - <span class="pink_color">3000 руб</span> (<span class="pink_color">+500 руб</span> паллета/паллетирование)</li>
+                    <li> <span class="pink_color">7</span> коробок - <span class="pink_color"><span data-price data-price_count="7"> 3000</span> руб</span> </li>
+                    <li> <span class="pink_color">8</span> коробок - <span class="pink_color"><span data-price data-price_count="8"> 3250</span> руб</span> (<span class="pink_color">400 руб</span> паллетирование)</li>
+                    <li> <span class="pink_color">9</span> коробок - <span class="pink_color"><span data-price data-price_count="9"> 3250</span> руб</span></li>
+                    <li> <span class="pink_color">10-16</span> коробок - <span class="pink_color"><span data-price data-price_count="10"> 3000</span> руб</span> (<span class="pink_color">800 руб</span> паллета/паллетирование)</li>
 
                 </ul>
             </div>
@@ -116,20 +116,20 @@
             </h3>
             <div class="calc_buttons_row">
                 <label class="cart_variant_button">
-                    <p>Санкт-Петербург</p>
-                    <input type="checkbox" name="additional[]">
+                    <p>Паллета - 250р</p>
+                    <input type="checkbox" name="additional[]" value="250">
                 </label>
                 <label class="cart_variant_button">
-                    <p>Коледино</p>
-                    <input type="checkbox" name="additional[]">
+                    <p>Паллетирование - 250р <br>(от 8 коробок)</p>
+                    <input type="checkbox" name="additional[]" value="250" data-restriction data-minkorobki="8">
                 </label>
                 <label class="cart_variant_button">
-                    <p>Краснодар</p>
-                    <input type="checkbox" name="additional[]">
+                    <p>Забор груза по городу, <br> < 6 коробок – 500 р</p>
+                    <input type="checkbox" name="additional[]" value="500" data-restriction data-maxkorobki="6">
                 </label>
                 <label class="cart_variant_button">
-                    <p>Краснодар</p>
-                    <input type="checkbox" name="additional[]"> 
+                    <p>Забор груза по городу, <br> > 6 коробок – 1000 р</p>
+                    <input type="checkbox" name="additional[]" value="1000" data-restriction data-minkorobki="6"> 
                 </label>
             </div>
             <div class="calc_buttons_price_block_row">
@@ -191,11 +191,11 @@
                     Ваш рассчет
                 </h3>
                 <div class="destination_block_inner">
-                    <div class="dest_block">
+                    <div class="dest_block" data-fromblock>
                         Москва
                     </div>
                     <img src="img/arrow.svg" alt="" class="arrow">
-                    <div class="dest_block">
+                    <div class="dest_block" data-toblock>
                         Краснодар
                     </div> 
                 </div>
@@ -206,24 +206,24 @@
                     <div class="row_value">Короб</div>
                 </div>
                 <div class="result_row result_calc_border_bottom">
-                    <div class="row_name">Форма отгрузки</div>
-                    <div class="row_value">Короб</div>
+                    <div class="row_name">Короб (60x40x40см) Объём 0.096 м³</div>
+                    <div class="row_value"> <span data-blockcount></span> шт </div>
                 </div>
                 <div class="result_row ">
-                    <div class="row_name">Форма отгрузки</div>
-                    <div class="row_value">Короб</div>
+                    <div class="row_name">Всего коробов:</div>
+                    <div class="row_value"><span data-blockcount></span> шт</div>
                 </div>
                 <div class="result_row ">
-                    <div class="row_name">Форма отгрузки</div>
-                    <div class="row_value">Короб</div>
+                    <div class="row_name">Общий объем коробов:</div>
+                    <div class="row_value">0.096 м³</div>
                 </div>
                 <div class="result_row ">
-                    <div class="row_name">Форма отгрузки</div>
-                    <div class="row_value">Короб</div>
+                    <div class="row_name">Паллета</div>
+                    <div class="row_value">250 P</div>
                 </div>
             </div>
             <div class="result_price">
-                Итого: <span class="pink_color">4 540 P</span>
+                Итого: <span class="pink_color"> <span data-resultprice>4 540</span> P</span>
             </div>
             <div class="move_buttons_row">
                 <div class="move_button prev" >
