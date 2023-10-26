@@ -1,3 +1,115 @@
+// var prices = {
+//     kazan : {
+//         rus_name: "Казань",
+//         ekaterinburg : {
+//             rus_name: "Екатеринбург",
+//             korobki : {
+//                 1 : 750,
+//                 2 : 1500,
+//                 3 : 2250,
+//                 4 : 3000,
+//                 5 : 3750,
+//                 6 : 4000,
+//                 7 : 4000,
+//                 8 : 4400,
+//                 9 : 4400,
+//                 10 : 4800,
+//             }
+//         },
+//         novosibirsk : {
+//             rus_name: "Новосибирск",
+//             korobki : {
+//                 1 : 1600,
+//                 2 : 3200,
+//                 3 : 4850,
+//                 4 : 6400,
+//                 5 : 7500,
+//                 6 : 7500,
+//                 7 : 7500,
+//                 8 : 7900,
+//                 9 : 7900,
+//                 10 : 8300,
+//             }
+//         },
+//         shushari : {
+//             rus_name: "Шушары",
+//             korobki : {
+//                 1 : 800,
+//                 2 : 1600,
+//                 3 : 2400,
+//                 4 : 3200,
+//                 5 : 4000,
+//                 6 : 4800,
+//                 7 : 5600,
+//                 8 : 6400,
+//                 9 : 6400,
+//                 10 : 6800,
+//             }
+//         },
+//         krasnodar : {
+//             rus_name: "Краснодар",
+//             korobki : {
+//                 1 : 800,
+//                 2 : 1600,
+//                 3 : 2400,
+//                 4 : 3200,
+//                 5 : 4000,
+//                 6 : 4800,
+//                 7 : 5600,
+//                 8 : 6400,
+//                 9 : 6400,
+//                 10 : 6800,
+//             }
+//         },
+//         mixed : {
+//             rus_name: "Коледино, Электросталь, Тула, Белые столбы, Софьино (ОЗ, ЯМ)",
+//             korobki : {
+//                 1 : 500,
+//                 2 : 1000,
+//                 3 : 1500,
+//                 4 : 2000,
+//                 5 : 2500,
+//                 6 : 3000,
+//                 7 : 3000,
+//                 8 : 3400,
+//                 9 : 3400,
+//                 10 : 4800,
+//             }
+//         }
+//     }
+// }
+
+var boxes = [
+    {
+        name : "Коробка 60x40x40",
+        volume: 0.096,
+    },
+    {
+        name : "Коробка 50x40x40",
+        volume: 0.080,
+    },
+    {
+        name : "Коробка 45x45x45",
+        volume: 0.091,
+    },
+    {
+        name : "Коробка 58x58x58",
+        volume: 0.195,
+    },
+    {
+        name : "Коробка 20x20x20",
+        volume: 0.008,
+    },
+    {
+        name : "Коробка 20x20x60",
+        volume: 0.024,
+    },
+    {
+        name : "Коробка 56x56x23",
+        volume: 0.072,
+    },
+]
+
 var calc_data = {
     tabs : [
         {
@@ -5,12 +117,20 @@ var calc_data = {
             input_name : "from",
             input_type : "radio",
             value: 0,
+            set_cities: true,
         },
         {
             active : false,
             input_name : "where",
             input_type : "radio",
             value: 0,
+            set_korobki : true,
+        },
+        {
+            active : false,
+            input_name : "box",
+            input_type : "radio",
+            value: [],
             set_prices : true,
         },
         {
@@ -36,81 +156,33 @@ var calc_data = {
 var prices = {
     kazan : {
         rus_name: "Казань",
-        ekaterinburg : {
-            rus_name: "Екатеринбург",
-            korobki : {
-                1 : 750,
-                2 : 1500,
-                3 : 2250,
-                4 : 3000,
-                5 : 3750,
-                6 : 4000,
-                7 : 4000,
-                8 : 4400,
-                9 : 4400,
-                10 : 4800,
-            }
-        },
-        novosibirsk : {
-            rus_name: "Новосибирск",
-            korobki : {
-                1 : 1600,
-                2 : 3200,
-                3 : 4850,
-                4 : 6400,
-                5 : 7500,
-                6 : 7500,
-                7 : 7500,
-                8 : 7900,
-                9 : 7900,
-                10 : 8300,
-            }
+        moscow : {
+            rus_name: "Москва",
+            korobki : 5000
         },
         shushari : {
-            rus_name: "Шушары",
-            korobki : {
-                1 : 800,
-                2 : 1600,
-                3 : 2400,
-                4 : 3200,
-                5 : 4000,
-                6 : 4800,
-                7 : 5600,
-                8 : 6400,
-                9 : 6400,
-                10 : 6800,
-            }
+            rus_name: "Шушары Краснодар",
+            korobki : 8300
+        },
+    },
+    moscow : {
+        rus_name: "Москва",
+        moscow : {
+            rus_name: "Казань",
+            korobki : 7500,
+        },
+        shushari : {
+            rus_name: "Шушары Краснодар",
+            korobki : 4800,
+        },
+        ekaterinburg : {
+            rus_name: "Екатеринбург",
+            korobki : 10000,
         },
         krasnodar : {
             rus_name: "Краснодар",
-            korobki : {
-                1 : 800,
-                2 : 1600,
-                3 : 2400,
-                4 : 3200,
-                5 : 4000,
-                6 : 4800,
-                7 : 5600,
-                8 : 6400,
-                9 : 6400,
-                10 : 6800,
-            }
+            korobki : 8000,
         },
-        mixed : {
-            rus_name: "Коледино, Электросталь, Тула, Белые столбы, Софьино (ОЗ, ЯМ)",
-            korobki : {
-                1 : 500,
-                2 : 1000,
-                3 : 1500,
-                4 : 2000,
-                5 : 2500,
-                6 : 3000,
-                7 : 3000,
-                8 : 3400,
-                9 : 3400,
-                10 : 4800,
-            }
-        }
     }
 }
 var next_buttons = document.querySelectorAll(".next");
@@ -172,7 +244,8 @@ function get_active_tab_index(){
 function set_prices(){
     prices_blocks = document.querySelectorAll("[data-price]");
     prices_blocks.forEach( function (price_block) {
-        price_block.textContent = prices[calc_data["tabs"][0]["value"]][calc_data["tabs"][1]["value"]]["korobki"][price_block.dataset.price_count]
+        // prices[calc_data["tabs"][0]["value"]][calc_data["tabs"][1]["value"]]["korobki"][price_block.dataset.price_count]
+        price_block.textContent = +prices[ calc_data["tabs"][0]["value"] ][calc_data["tabs"][1]["value"]]["korobki"] * +calc_data["tabs"][2]["value"] * +price_block.dataset.price_count 
     })
 }
 
@@ -214,6 +287,43 @@ function set_result() {
     priceblock.textContent = prices[calc_data.tabs[0]["value"]][calc_data.tabs[1]["value"]]["korobki"][temp_count]
 }
 
+
+function set_cities(from_city) {
+    container = document.getElementById("to_cities_container");
+    container.innerHTML = "";
+    for (const [key, value] of Object.entries(prices[from_city])) {
+        if (key != "rus_name") {
+            let label = document.createElement("label"); 
+            label.className = "cart_variant_button";
+            let text = document.createElement("p");
+            text.textContent = value.rus_name;
+            let input = document.createElement("input");
+            input.setAttribute('type', 'radio');
+            input.setAttribute('name', "where");
+            input.value = key;
+            label.appendChild(text);
+            label.appendChild(input);
+            container.appendChild(label)
+        }
+    }
+}
+function set_korobki() {
+    container = document.getElementById("korobki_container");
+    container.innerHTML = "";
+    boxes.forEach( function (box, i) {
+        let label = document.createElement("label"); 
+        label.className = "cart_variant_button";
+        let text = document.createElement("p");
+        text.textContent = box.name;
+        let input = document.createElement("input");
+        input.setAttribute('type', 'radio');
+        input.setAttribute('name', "box");
+        input.value = box.volume;
+        label.appendChild(text);
+        label.appendChild(input);
+        container.appendChild(label)
+    })
+}
 function move_next_slide(){
     let active = get_active_tab_index();
     if (calc_data["tabs"].length - 1 == active){
@@ -236,6 +346,12 @@ function move_next_slide(){
             if (calc_data["tabs"][active]["set_result"]){
                 set_result();
             }
+            if (calc_data["tabs"][active]["set_cities"]){
+                set_cities(calc_data["tabs"][active]["value"]);
+            }
+            if (calc_data["tabs"][active]["set_korobki"]){
+                set_korobki();
+            }
             calc_data["tabs"][active]["active"] = false;
             calc_data["tabs"][active + 1]["active"] = true;
 
@@ -246,9 +362,9 @@ function move_next_slide(){
                     tab.classList.remove("calc_right_part__active");
                 }
             })
+            console.log(calc_data);
             set_percent();
             document.getElementById("error_span").textContent = ""; 
-            console.log(calc_data);
         } else {
             document.getElementById("error_span").textContent = "Не выбрана опция";
         }
@@ -272,7 +388,6 @@ function move_last_slide(){
         }) 
         set_percent();
         document.getElementById("error_span").textContent = ""; 
-        console.log(calc_data);
     }
 }
 

@@ -25,10 +25,14 @@
             <h3 class="step_heading">
                 Откуда будете производить отправку товара?
             </h3>
-            <div class="calc_buttons_row">
+            <div class="calc_buttons_row" >
                 <label class="cart_variant_button">
                     <p>Казань</p>
                     <input type="radio" value="kazan" name="from">
+                </label>
+                <label class="cart_variant_button">
+                    <p>Москва</p>
+                    <input type="radio" value="moscow" name="from">
                 </label>
             </div>
             <div class="move_buttons_row">
@@ -44,31 +48,22 @@
             <h3 class="step_heading">
                 Куда доставить ваш груз?            
             </h3>
-            <div class="calc_buttons_row">
-                <label class="cart_variant_button">
-                    <p>Екатеринбург</p>
-                    <input type="radio" name="where" value="ekaterinburg">
-                </label>
-                <label class="cart_variant_button">
-                    <p>Новосибирск</p>
-                    <input type="radio" name="where" value="novosibirsk">
-                </label>
-                <label class="cart_variant_button">
-                    <p>Шушары</p>
-                    <input type="radio" name="where" value="shushari">
-                </label>
-                <label class="cart_variant_button">
-                    <p>Краснодар</p>
-                    <input type="radio" name="where" value="krasnodar">
-                </label>
-                <label class="cart_variant_button">
-                    <p>Коледино, Электросталь</p>
-                    <input type="radio" name="where" value="mixed">
-                </label>
-                <label class="cart_variant_button">
-                    <p>Тула, Белые столбы, Софьино (ОЗ, ЯМ)</p>
-                    <input type="radio" name="where" value="mixed">
-                </label>
+            <div class="calc_buttons_row" id="to_cities_container">
+            </div>
+            <div class="move_buttons_row">
+                <div class="move_button prev" >
+                    Назад
+                </div>
+                <div class="move_button next">
+                    Далее
+                </div>
+            </div>
+        </div>
+        <div class="calc_right_part">
+            <h3 class="step_heading">
+                Типы коробок            
+            </h3>
+            <div class="calc_buttons_row" id="korobki_container">
             </div>
             <div class="move_buttons_row">
                 <div class="move_button prev" >

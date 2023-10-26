@@ -254,3 +254,7 @@
 .error_span {
     color: red;
 }
+
+#korobki_container {
+    margin-bottom: 20px;
+}
