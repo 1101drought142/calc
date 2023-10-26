@@ -135,7 +135,7 @@ var calc_data = {
         },
         {
             active : false,
-            input_name : "box_count",
+            input_name : "box_count[]",
             input_type : "int",
             value: 0,
             set_restriction: true,
@@ -206,8 +206,10 @@ function set_percent() {
 function get_input_values(input_list){
     let res_values = [];
     input_list.forEach( function (input) {
-        if (input.type == "radio" || input.type == "checkbox"){
+        if (input.type == "radio" || input.type == "checkbox" || input.type == "number"){
             if (input.checked) {
+                res_values.push(input.value);
+            } else if (input.value && input.type == "number"){
                 res_values.push(input.value);
             }
         } else {
@@ -243,10 +245,22 @@ function get_active_tab_index(){
 }
 
 function set_prices(){
-    prices_blocks = document.querySelectorAll("[data-price]");
-    prices_blocks.forEach( function (price_block) {
-        // prices[calc_data["tabs"][0]["value"]][calc_data["tabs"][1]["value"]]["korobki"][price_block.dataset.price_count]
-        price_block.textContent = (+prices[ calc_data["tabs"][0]["value"] ][calc_data["tabs"][1]["value"]]["korobki"] * +calc_data["tabs"][2]["value"] * +price_block.dataset.price_count).toFixed(2) 
+    var inputs_container = document.getElementById("inputs_container_count");
+    inputs_container.innerHTML = "";
+    calc_data["tabs"][2]["value"].forEach(function (korobka_type_id) {
+        var temp_korobka = boxes[korobka_type_id];
+        var input = document.createElement("input");
+        input.className = "one_row_input";
+        input.setAttribute('type', 'number');
+        input.setAttribute('name', "box_count[]");
+        input.setAttribute('placeholder', "Введите кол.во коробов для отправки (" + temp_korobka["name"] + ")");
+        input.setAttribute('max', "16");
+        input.setAttribute('min', "0");
+        var description = document.createElement("div");
+        description.className = "two_list_blocks";
+        description.innerHTML = "<ul> <li> <span class='pink_color'>1</span> " + temp_korobka["name"] + " - <span class='pink_color'> <span>" + (+temp_korobka["volume"] * +prices[calc_data["tabs"][0]["value"]][calc_data["tabs"][1]["value"]]["korobki"]).toFixed(2)  + " руб </span></span></li> </ul>";
+        inputs_container.appendChild(input)
+        inputs_container.appendChild(description)
     })
 }
 
@@ -283,6 +297,9 @@ function set_cities(from_city) {
             let input = document.createElement("input");
             input.setAttribute('type', 'radio');
             input.setAttribute('name', "where");
+            if (calc_data["tabs"][1].length > 0){
+                input.setAttribute('checked');
+            }
             input.value = key;
             label.appendChild(text);
             label.appendChild(input);
@@ -301,13 +318,43 @@ function set_korobki() {
         let input = document.createElement("input");
         input.setAttribute('type', 'checkbox');
         input.setAttribute('name', "box");
-        input.value = box.volume;
+        input.value = i;
         label.appendChild(text);
         label.appendChild(input);
         container.appendChild(label)
     })
 }
 
+function sum_list(list){
+    result = 0
+    list.forEach(function (element) {
+        result += +element
+    })
+    return result;
+}
+
+function calc_volume() {
+    result = 0;
+    id_list = calc_data.tabs[2]["value"];
+    count_list = calc_data.tabs[3]["value"];
+    count_list.forEach(function (element, i) {
+        temp_box = boxes[i];
+        result += temp_box["volume"] * element
+    })
+    return result;
+}
+
+function calc_result_price() {
+    result = 0;
+    id_list = calc_data.tabs[2]["value"];
+    count_list = calc_data.tabs[3]["value"];
+    count_list.forEach(function (element, i) {
+        temp_box = boxes[i];
+        console.log()
+        result += temp_box["volume"] * element * prices[calc_data["tabs"][0]["value"]][calc_data["tabs"][1]["value"]]["korobki"]
+    })
+    return result;
+}
 
 function set_result() {
 
@@ -322,18 +369,18 @@ function set_result() {
     blockvolume = document.querySelectorAll("[data-blockvolume]");
     blockvolumeall = document.querySelectorAll("[data-blockvolumeall]");
     
+    result_top_container = document.querySelector(".result_row__column");
     result_container = document.getElementById("result_calc_columnn");
 
     fromblock.textContent = prices[calc_data.tabs[0]["value"]]["rus_name"];
     toblock.textContent = prices[calc_data.tabs[0]["value"]][calc_data.tabs[1]["value"]]["rus_name"];
 
     count_blocks.forEach(element => {
-        element.textContent = calc_data.tabs[3]["value"];
+        element.textContent = sum_list(calc_data.tabs[3]["value"])
     });
     
     blockname_str = "";
     boxes.forEach(element => {
-
         if (element.volume == calc_data.tabs[2]["value"]) {
             blockname_str = element.name;
         }
@@ -343,25 +390,32 @@ function set_result() {
         element.textContent = blockname_str;
     });
 
-
-    blockvolume.forEach(element => {
-        element.textContent = calc_data.tabs[2]["value"];
-    });
     blockvolumeall.forEach(element => {
-        element.textContent = (+calc_data.tabs[2]["value"] * +calc_data.tabs[3]["value"]).toFixed(2);
+        element.textContent = calc_volume().toFixed(2);
     });
 
-    temp_count = calc_data.tabs[2]["value"];
-    if (temp_count >= 10){
-        temp_count = 10;
-    }
-    priceblock.textContent = (+prices[ calc_data["tabs"][0]["value"] ][calc_data["tabs"][1]["value"]]["korobki"] * +calc_data["tabs"][2]["value"] *  +calc_data["tabs"][3]["value"]).toFixed(3);
+
+    priceblock.textContent = calc_result_price().toFixed(3);
 
     extra_rows = document.querySelectorAll(".result_row__extra_row");
     extra_rows.forEach( function (row) {
         row.remove()
     })
 
+    calc_data['tabs'][2]["value"].forEach( function (element, i) {
+        var result_row = document.createElement("div"); 
+        result_row.className = "result_row result_row__extra_row";
+        var result_row_name = document.createElement("div"); 
+        result_row_name.className = "row_name";
+        result_row_name.textContent = boxes[element]["name"] + " объём " + +boxes[element]["volume"] * +calc_data["tabs"][3]["value"][i] + " м³";
+        var result_row_value = document.createElement("div"); 
+        result_row_value.className = "row_value";
+        result_row_value.textContent = +calc_data["tabs"][3]["value"][i] + " шт";
+        result_row.append(result_row_name);
+        result_row.append(result_row_value);
+        result_top_container.append(result_row)    
+
+    })
     if (calc_data["tabs"][4]["value"].length != 0){
         var result_row = document.createElement("div"); 
         result_row.className = "result_row result_row__extra_row";
@@ -387,7 +441,7 @@ function move_next_slide(){
         if (get_step_value().length != 0 || calc_data["tabs"][active]["not_necessery"] == true) {
             document.getElementById("last_button").style.display = "flex";
 
-            if (calc_data["tabs"][active]["input_type"] == "radio" || calc_data["tabs"][active]["input_type"] == "int"){
+            if (calc_data["tabs"][active]["input_type"] == "radio"){
                 calc_data["tabs"][active]["value"] = get_step_value()[0];
             } else {
                 calc_data["tabs"][active]["value"] = get_step_value();

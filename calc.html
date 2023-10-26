@@ -76,25 +76,10 @@
         </div>
         <div class="calc_right_part">
             <h3 class="step_heading">
-                Откуда будете производить отправку товара?
+                Количество коробок для отправки
             </h3>
-            <input type="number" placeholder="Введите кол.во коробов для отправки" class="one_row_input" name="box_count" max="16" min="0">
-            <div class="two_list_blocks">
-                <ul>
-                    <li> <span class="pink_color">1</span> коробка - <span class="pink_color"> <span data-price data-price_count="1">500</span> руб  </span></li>
-                    <li> <span class="pink_color">2</span> коробки - <span class="pink_color"> <span data-price data-price_count="2" >1000</span> руб </span></li>
-                    <li> <span class="pink_color">3</span> коробки - <span class="pink_color"> <span data-price data-price_count="3" >1500</span> руб </span></li>
-                    <li> <span class="pink_color">4</span> коробки - <span class="pink_color"> <span data-price data-price_count="4" >2000</span> руб </span></li>
-                    <li> <span class="pink_color">5</span> коробок - <span class="pink_color"> <span data-price data-price_count="5" >2500</span> руб </span></li>
-                    <li> <span class="pink_color">6</span> коробок - <span class="pink_color"> <span data-price data-price_count="6" >3000</span> руб </span></li>
-                </ul>
-                <ul>
-                    <li> <span class="pink_color">7</span> коробок - <span class="pink_color"><span data-price data-price_count="7"> 3000</span> руб</span> </li>
-                    <li> <span class="pink_color">8</span> коробок - <span class="pink_color"><span data-price data-price_count="8"> 3250</span> руб</span> (<span class="pink_color">400 руб</span> паллетирование)</li>
-                    <li> <span class="pink_color">9</span> коробок - <span class="pink_color"><span data-price data-price_count="9"> 3250</span> руб</span></li>
-                    <li> <span class="pink_color">10-16</span> коробок - <span class="pink_color"><span data-price data-price_count="10"> 3000</span> руб</span> (<span class="pink_color">800 руб</span> паллета/паллетирование)</li>
-
-                </ul>
+            <div id="inputs_container_count">
+                
             </div>
             <div class="move_buttons_row">
                 <div class="move_button prev" >
@@ -176,10 +161,9 @@
                     <div class="row_name">Форма отгрузки</div>
                     <div class="row_value">Короб</div>
                 </div>
-                <div class="result_row result_calc_border_bottom">
-                    <div class="row_name"><span data-blockname></span> Объём <span data-blockvolume></span> м³</div>
-                    <div class="row_value"> <span data-blockcount></span> шт </div>
+                <div class="result_row__column result_calc_border_bottom">
                 </div>
+                
                 <div class="result_row ">
                     <div class="row_name">Всего коробов:</div>
                     <div class="row_value"><span data-blockcount></span> шт</div>
