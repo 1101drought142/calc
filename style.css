@@ -2,11 +2,18 @@
     width: 100%;
     max-width: 1200px;
 }
-
+.calc_left_part {
+    display: flex;
+    flex-direction: column;
+}
+.calc_progress_bar {
+    margin-top: auto;
+}
 .calc_flex {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
+    justify-content: space-between;
 }
 .calc_flex > * {
     flex-basis: 45%;

@@ -129,7 +129,7 @@ var calc_data = {
         {
             active : false,
             input_name : "box",
-            input_type : "radio",
+            input_type : "checkbox",
             value: [],
             set_prices : true,
         },
@@ -146,6 +146,7 @@ var calc_data = {
             input_type : "checkbox",
             value: [],
             set_result: true,
+            not_necessery: true,
         },
         {
             active : false,
@@ -269,6 +270,45 @@ function set_restrictions(){
     })
 }
 
+
+function set_cities(from_city) {
+    container = document.getElementById("to_cities_container");
+    container.innerHTML = "";
+    for (const [key, value] of Object.entries(prices[from_city])) {
+        if (key != "rus_name") {
+            let label = document.createElement("label"); 
+            label.className = "cart_variant_button";
+            let text = document.createElement("p");
+            text.textContent = value.rus_name;
+            let input = document.createElement("input");
+            input.setAttribute('type', 'radio');
+            input.setAttribute('name', "where");
+            input.value = key;
+            label.appendChild(text);
+            label.appendChild(input);
+            container.appendChild(label)
+        }
+    }
+}
+function set_korobki() {
+    container = document.getElementById("korobki_container");
+    container.innerHTML = "";
+    boxes.forEach( function (box, i) {
+        let label = document.createElement("label"); 
+        label.className = "cart_variant_button";
+        let text = document.createElement("p");
+        text.textContent = box.name;
+        let input = document.createElement("input");
+        input.setAttribute('type', 'checkbox');
+        input.setAttribute('name', "box");
+        input.value = box.volume;
+        label.appendChild(text);
+        label.appendChild(input);
+        container.appendChild(label)
+    })
+}
+
+
 function set_result() {
 
     document.getElementById("last_button").style.display = "none";
@@ -338,50 +378,13 @@ function set_result() {
     }
 }
 
-
-function set_cities(from_city) {
-    container = document.getElementById("to_cities_container");
-    container.innerHTML = "";
-    for (const [key, value] of Object.entries(prices[from_city])) {
-        if (key != "rus_name") {
-            let label = document.createElement("label"); 
-            label.className = "cart_variant_button";
-            let text = document.createElement("p");
-            text.textContent = value.rus_name;
-            let input = document.createElement("input");
-            input.setAttribute('type', 'radio');
-            input.setAttribute('name', "where");
-            input.value = key;
-            label.appendChild(text);
-            label.appendChild(input);
-            container.appendChild(label)
-        }
-    }
-}
-function set_korobki() {
-    container = document.getElementById("korobki_container");
-    container.innerHTML = "";
-    boxes.forEach( function (box, i) {
-        let label = document.createElement("label"); 
-        label.className = "cart_variant_button";
-        let text = document.createElement("p");
-        text.textContent = box.name;
-        let input = document.createElement("input");
-        input.setAttribute('type', 'radio');
-        input.setAttribute('name', "box");
-        input.value = box.volume;
-        label.appendChild(text);
-        label.appendChild(input);
-        container.appendChild(label)
-    })
-}
 function move_next_slide(){
     let active = get_active_tab_index();
     if (calc_data["tabs"].length - 1 == active){
 
     } else {
         
-        if (get_step_value().length != 0 || calc_data["tabs"][active]["input_type"] == "checkbox") {
+        if (get_step_value().length != 0 || calc_data["tabs"][active]["not_necessery"] == true) {
             document.getElementById("last_button").style.display = "flex";
 
             if (calc_data["tabs"][active]["input_type"] == "radio" || calc_data["tabs"][active]["input_type"] == "int"){
