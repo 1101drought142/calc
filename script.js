@@ -245,7 +245,7 @@ function set_prices(){
     prices_blocks = document.querySelectorAll("[data-price]");
     prices_blocks.forEach( function (price_block) {
         // prices[calc_data["tabs"][0]["value"]][calc_data["tabs"][1]["value"]]["korobki"][price_block.dataset.price_count]
-        price_block.textContent = +prices[ calc_data["tabs"][0]["value"] ][calc_data["tabs"][1]["value"]]["korobki"] * +calc_data["tabs"][2]["value"] * +price_block.dataset.price_count 
+        price_block.textContent = (+prices[ calc_data["tabs"][0]["value"] ][calc_data["tabs"][1]["value"]]["korobki"] * +calc_data["tabs"][2]["value"] * +price_block.dataset.price_count).toFixed(2) 
     })
 }
 
@@ -253,14 +253,14 @@ function set_restrictions(){
     restriction_blocks = document.querySelectorAll("[data-restriction]");
     restriction_blocks.forEach( function (restriction_block) {
         if (restriction_block.dataset.maxkorobki){
-            if ( +restriction_block.dataset.maxkorobki < calc_data.tabs[2].value ){
+            if ( +restriction_block.dataset.maxkorobki < calc_data.tabs[3].value ){
                 restriction_block.setAttribute('disabled', '');
             } else {
                 restriction_block.removeAttribute('disabled');    
             }
         }
         if (restriction_block.dataset.minkorobki) {
-            if ( +restriction_block.dataset.minkorobki >= calc_data.tabs[2].value ){
+            if ( +restriction_block.dataset.minkorobki >= calc_data.tabs[3].value ){
                 restriction_block.setAttribute('disabled', '');
             } else {
                 restriction_block.removeAttribute('disabled');    
@@ -270,21 +270,72 @@ function set_restrictions(){
 }
 
 function set_result() {
+
+    document.getElementById("last_button").style.display = "none";
+
     fromblock = document.querySelector("[data-fromblock]");
     toblock = document.querySelector("[data-toblock]");
     count_blocks = document.querySelectorAll("[data-blockcount]");
     priceblock = document.querySelector("[data-resultprice]");
+
+    blockname = document.querySelectorAll("[data-blockname]");
+    blockvolume = document.querySelectorAll("[data-blockvolume]");
+    blockvolumeall = document.querySelectorAll("[data-blockvolumeall]");
+    
+    result_container = document.getElementById("result_calc_columnn");
+
     fromblock.textContent = prices[calc_data.tabs[0]["value"]]["rus_name"];
     toblock.textContent = prices[calc_data.tabs[0]["value"]][calc_data.tabs[1]["value"]]["rus_name"];
 
     count_blocks.forEach(element => {
+        element.textContent = calc_data.tabs[3]["value"];
+    });
+    
+    blockname_str = "";
+    boxes.forEach(element => {
+
+        if (element.volume == calc_data.tabs[2]["value"]) {
+            blockname_str = element.name;
+        }
+    });
+
+    blockname.forEach(element => {
+        element.textContent = blockname_str;
+    });
+
+
+    blockvolume.forEach(element => {
         element.textContent = calc_data.tabs[2]["value"];
     });
+    blockvolumeall.forEach(element => {
+        element.textContent = (+calc_data.tabs[2]["value"] * +calc_data.tabs[3]["value"]).toFixed(2);
+    });
+
     temp_count = calc_data.tabs[2]["value"];
     if (temp_count >= 10){
         temp_count = 10;
     }
-    priceblock.textContent = prices[calc_data.tabs[0]["value"]][calc_data.tabs[1]["value"]]["korobki"][temp_count]
+    priceblock.textContent = (+prices[ calc_data["tabs"][0]["value"] ][calc_data["tabs"][1]["value"]]["korobki"] * +calc_data["tabs"][2]["value"] *  +calc_data["tabs"][3]["value"]).toFixed(3);
+
+    extra_rows = document.querySelectorAll(".result_row__extra_row");
+    extra_rows.forEach( function (row) {
+        row.remove()
+    })
+
+    if (calc_data["tabs"][4]["value"].length != 0){
+        var result_row = document.createElement("div"); 
+        result_row.className = "result_row result_row__extra_row";
+        var result_row_name = document.createElement("div"); 
+        result_row_name.className = "row_name";
+        result_row_name.textContent = "Доставка по городу";
+        var result_row_value = document.createElement("div"); 
+        result_row_value.className = "row_value";
+        result_row_value.textContent = calc_data["tabs"][4]["value"][0] + " P";
+        result_row.append(result_row_name);
+        result_row.append(result_row_value);
+        result_container.append(result_row)    
+        priceblock.textContent = +priceblock.textContent + +calc_data["tabs"][4]["value"][0]
+    }
 }
 
 
@@ -330,7 +381,9 @@ function move_next_slide(){
 
     } else {
         
-        if (get_step_value().length != 0) {
+        if (get_step_value().length != 0 || calc_data["tabs"][active]["input_type"] == "checkbox") {
+            document.getElementById("last_button").style.display = "flex";
+
             if (calc_data["tabs"][active]["input_type"] == "radio" || calc_data["tabs"][active]["input_type"] == "int"){
                 calc_data["tabs"][active]["value"] = get_step_value()[0];
             } else {

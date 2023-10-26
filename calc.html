@@ -78,7 +78,7 @@
             <h3 class="step_heading">
                 Откуда будете производить отправку товара?
             </h3>
-            <input type="int" placeholder="Введите кол.во коробов для отправки" class="one_row_input" name="box_count">
+            <input type="number" placeholder="Введите кол.во коробов для отправки" class="one_row_input" name="box_count" max="16">
             <div class="two_list_blocks">
                 <ul>
                     <li> <span class="pink_color">1</span> коробка - <span class="pink_color"> <span data-price data-price_count="1">500</span> руб  </span></li>
@@ -110,14 +110,14 @@
                 Дополнительные услуги
             </h3>
             <div class="calc_buttons_row">
-                <label class="cart_variant_button">
+                <!-- <label class="cart_variant_button">
                     <p>Паллета - 250р</p>
                     <input type="checkbox" name="additional[]" value="250">
                 </label>
                 <label class="cart_variant_button">
                     <p>Паллетирование - 250р <br>(от 8 коробок)</p>
                     <input type="checkbox" name="additional[]" value="250" data-restriction data-minkorobki="8">
-                </label>
+                </label> -->
                 <label class="cart_variant_button">
                     <p>Забор груза по городу, <br> < 6 коробок – 500 р</p>
                     <input type="checkbox" name="additional[]" value="500" data-restriction data-maxkorobki="6">
@@ -127,31 +127,7 @@
                     <input type="checkbox" name="additional[]" value="1000" data-restriction data-minkorobki="6"> 
                 </label>
             </div>
-            <div class="calc_buttons_price_block_row">
-                <div class="calc_buttons_price_block">
-                    <div class="sub_head_calc">
-                        Цена за 1 паллеты по весу:
-                    </div>
-                    <div class="sub_block_calc">
-                        <p>
-                            Москва и Алексин
-                        </p>
-                        <ul>
-                            <li>
-                                <span class="pink_color">0-200</span> кг. – <span class="pink_color">3000 р</span>
-                            </li>
-                            <li>
-                                <span class="pink_color">200-300</span> кг. – <span class="pink_color">3500 р</span>
-                            </li>
-                            <li>
-                                <span class="pink_color">300-400</span> кг. – <span class="pink_color">4500 р</span>
-                            </li>
-                            <li>
-                                <span class="pink_color">400-500</span> кг. – <span class="pink_color">5000 р</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+            <!-- <div class="calc_buttons_price_block_row">
                 <div class="calc_buttons_price_block">
                     <div class="sub_head_calc">
                         Цена за 1 паллеты по весу:
@@ -170,8 +146,8 @@
                         </ul>
                     </div>
                 </div>
-            </div>
-            <div class="move_buttons_row no_margin">
+            </div> -->
+            <div class="move_buttons_row">
                 <div class="move_button prev" >
                     Назад
                 </div>
@@ -195,13 +171,13 @@
                     </div> 
                 </div>
             </div>
-            <div class="background_calc_result">
+            <div class="background_calc_result" id="result_calc_columnn">
                 <div class="result_row calc_heading_row">
                     <div class="row_name">Форма отгрузки</div>
                     <div class="row_value">Короб</div>
                 </div>
                 <div class="result_row result_calc_border_bottom">
-                    <div class="row_name">Короб (60x40x40см) Объём 0.096 м³</div>
+                    <div class="row_name"><span data-blockname></span> Объём <span data-blockvolume></span> м³</div>
                     <div class="row_value"> <span data-blockcount></span> шт </div>
                 </div>
                 <div class="result_row ">
@@ -210,12 +186,9 @@
                 </div>
                 <div class="result_row ">
                     <div class="row_name">Общий объем коробов:</div>
-                    <div class="row_value">0.096 м³</div>
+                    <div class="row_value"><span data-blockvolumeall></span> м³</div>
                 </div>
-                <div class="result_row ">
-                    <div class="row_name">Паллета</div>
-                    <div class="row_value">250 P</div>
-                </div>
+
             </div>
             <div class="result_price">
                 Итого: <span class="pink_color"> <span data-resultprice>4 540</span> P</span>
@@ -224,7 +197,7 @@
                 <div class="move_button prev" >
                     Назад
                 </div>
-                <div class="move_button next">
+                <div class="move_button next" id="last_button">
                     Далее
                 </div>
             </div>
