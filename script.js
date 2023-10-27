@@ -80,16 +80,16 @@
 // }
 var palets = [
     {
-        name : "0-200"
+        name : "0-200 кг",
     },
     {
-        name : "200-300"
+        name : "200-300 кг"
     },
     {
-        name : "300-400"
+        name : "300-400 кг"
     },
     {
-        name : "400-500"
+        name : "400-500 кг"
     },
 ]
 var boxes = [
@@ -155,14 +155,31 @@ var calc_data = {
         },
         {
             active : false,
-            input_name : "additional[]",
-            input_type : "checkbox",
-            value: [],
-            
-            not_necessery: true,
+            input_name : "name[]",
+            input_type : "text",
+            value: 0,
+            set_restriction: true,
         },
         {
             active : false,
+            input_name : "additional[]",
+            input_type : "checkbox",
+            value: [],
+            set_pallets: true,
+            not_necessery: true,
+            set_result: true,
+        },
+        {
+            active : false,
+            input_name : "container_types[]",
+            input_type : "checkbox",
+            value: [],
+            set_pallet_count: true,
+        },
+        {
+            active : false,
+            input_name : "container_count[]",
+            input_type : "int",
             value: [],
             set_result: true,
         },
@@ -257,7 +274,15 @@ function get_boxes() {
 function get_box_count() {
     return calc_data["tabs"][3]["value"];
 }
-
+function get_additional_info() {
+    return calc_data["tabs"][5]["value"];
+}
+function get_pallet_types() {
+    return calc_data["tabs"][6]["value"];
+}
+function get_pallet_count() {
+    return calc_data["tabs"][7]["value"];
+}
 function sum_list(list){
     result = 0
     list.forEach(function (element) {
@@ -342,6 +367,8 @@ function set_prices(){
 function set_restrictions(){
     restriction_blocks = document.querySelectorAll("[data-restriction]");
     restriction_blocks.forEach( function (restriction_block) {
+        restriction_block.checked = false;
+
         if (restriction_block.dataset.maxkorobki){
             if ( +restriction_block.dataset.maxkorobki < sum_list(get_box_count()) ){
                 restriction_block.setAttribute('disabled', '');
@@ -354,6 +381,16 @@ function set_restrictions(){
                 restriction_block.setAttribute('disabled', '');
             } else {
                 restriction_block.removeAttribute('disabled');    
+            }
+        }
+        if (restriction_block.dataset.minkorobkicheck) {
+            if ( +restriction_block.dataset.minkorobkicheck >= sum_list(get_box_count()) ){
+                restriction_block.setAttribute('disabled', '');
+                restriction_block.checked = true;
+
+            } else {
+                restriction_block.removeAttribute('disabled');
+                restriction_block.checked = false;    
             }
         }
     })
@@ -384,26 +421,42 @@ function set_cities(from_city) {
 }
 
 function set_container_types(){
-    container = document.getElementById("pallet_count");
+    container = document.getElementById("pallet_types");
     container.innerHTML = "";
-    for (const [key, value] of Object.entries(palets)) {
-       
+    palets.forEach( function (box, i) {
         let label = document.createElement("label"); 
         label.className = "cart_variant_button";
         let text = document.createElement("p");
-        text.textContent = value.name;
+        text.textContent = box.name;
         let input = document.createElement("input");
-        input.setAttribute('type', 'radio');
-        input.setAttribute('name', "where");
+        input.setAttribute('type', 'checkbox');
+        input.setAttribute('name', "container_types[]");
         if (calc_data["tabs"][1].length > 0){
             input.setAttribute('checked');
         }
-        input.value = key;
+        input.value = i;
         label.appendChild(text);
         label.appendChild(input);
         container.appendChild(label)
-    }
+    })
 }
+
+function set_pallet_count(){
+    var inputs_container = document.getElementById("pallet_count");
+    inputs_container.innerHTML = "";
+    get_pallet_types().forEach(function (korobka_type_id) {
+        var temp_palet = palets[korobka_type_id];
+        var input = document.createElement("input");
+        input.className = "one_row_input";
+        input.setAttribute('type', 'number');
+        input.setAttribute('name', "container_count[]");
+        input.setAttribute('placeholder', "Введите кол.во палетов для отправки (" + temp_palet["name"] + ")");
+        input.setAttribute('max', "16");
+        input.setAttribute('min', "0");
+        inputs_container.appendChild(input)
+    })
+}
+
 function set_korobki() {
     container = document.getElementById("korobki_container");
     container.innerHTML = "";
@@ -446,6 +499,65 @@ function calc_result_price() {
     })
     return result;
 }
+function add_additional_rows(container, priceblock) {
+    get_additional_info().forEach( function (additional) {
+        if (additional == "pallet"){
+            add_pallets(container, priceblock);
+        } else {
+            if (additional == "small_dostavka"){
+                var row_name = "Доставка по городу";
+                var price = 500;
+            } else if (additional == "big_dostavka") {
+                var row_name = "Доставка по городу";
+                var price = 1000;
+            } else if (additional == "palletirovanie") {
+                var row_name = "Паллетирование";
+                if (sum_list(get_box_count()) >= 8) {
+                    var price = 800;
+                } else {
+                    var price = 400;
+                }
+                
+            }
+                
+            var result_row = document.createElement("div"); 
+            result_row.className = "result_row result_row__extra_row";
+            var result_row_name = document.createElement("div"); 
+            result_row_name.className = "row_name";
+            result_row_name.textContent = row_name;
+            var result_row_value = document.createElement("div"); 
+            result_row_value.className = "row_value";
+            result_row_value.textContent = price + " P";
+            result_row.append(result_row_name);
+            result_row.append(result_row_value);
+            container.append(result_row)    
+            priceblock.textContent = +priceblock.textContent + +price
+        }
+    })
+}
+
+function add_pallets(container, priceblock){
+    container_types = get_pallet_types();
+    container_count = get_pallet_count();
+    container_types.forEach( function (element, i) {
+        
+        element_name = "Паллет " + palets[element]["name"] + " " + container_count[i] + " шт";
+        element_price = +container_count[i] * +prices[get_from_city()][get_to_city()]["pallets"][element];
+
+        var result_row = document.createElement("div"); 
+        result_row.className = "result_row result_row__extra_row";
+        var result_row_name = document.createElement("div"); 
+        result_row_name.className = "row_name";
+        result_row_name.textContent = element_name;
+        var result_row_value = document.createElement("div"); 
+        result_row_value.className = "row_value";
+        result_row_value.textContent = element_price + " P";
+        result_row.append(result_row_name);
+        result_row.append(result_row_value);
+        container.append(result_row)    
+        priceblock.textContent = +priceblock.textContent + +element_price
+    });
+}
 
 function set_result() {
 
@@ -464,10 +576,11 @@ function set_result() {
     result_container = document.getElementById("result_calc_columnn");
 
     fromblock.textContent = prices[get_from_city()]["rus_name"];
-    toblock.textContent = prices[get_from_city()][get_from_city()]["rus_name"];
+
+    toblock.textContent = prices[get_from_city()][get_to_city()]["rus_name"];
 
     count_blocks.forEach(element => {
-        element.textContent = sum_list(get_box_count()["value"])
+        element.textContent = sum_list(get_box_count())
     });
     
     blockname_str = "";
@@ -493,7 +606,7 @@ function set_result() {
         row.remove()
     })
 
-    calc_data['tabs'][2]["value"].forEach( function (element, i) {
+    get_boxes().forEach( function (element, i) {
         var result_row = document.createElement("div"); 
         result_row.className = "result_row result_row__extra_row";
         var result_row_name = document.createElement("div"); 
@@ -507,19 +620,9 @@ function set_result() {
         result_top_container.append(result_row)    
 
     })
-    if (calc_data["tabs"][4]["value"].length != 0){
-        var result_row = document.createElement("div"); 
-        result_row.className = "result_row result_row__extra_row";
-        var result_row_name = document.createElement("div"); 
-        result_row_name.className = "row_name";
-        result_row_name.textContent = "Доставка по городу";
-        var result_row_value = document.createElement("div"); 
-        result_row_value.className = "row_value";
-        result_row_value.textContent = calc_data["tabs"][4]["value"][0] + " P";
-        result_row.append(result_row_name);
-        result_row.append(result_row_value);
-        result_container.append(result_row)    
-        priceblock.textContent = +priceblock.textContent + +calc_data["tabs"][4]["value"][0]
+    if (get_additional_info().length != 0){
+
+        add_additional_rows(result_container, priceblock);
     }
 }
 
@@ -531,7 +634,7 @@ function move_next_slide(){
         
         if (get_step_value().length != 0 || calc_data["tabs"][active]["not_necessery"] == true) {
             document.getElementById("last_button").style.display = "flex";
-
+            var step = 1;
             if (calc_data["tabs"][active]["input_type"] == "radio"){
                 calc_data["tabs"][active]["value"] = get_step_value()[0];
             } else {
@@ -553,13 +656,20 @@ function move_next_slide(){
             if (calc_data["tabs"][active]["set_korobki"]){
                 set_korobki();
             }
-
-
+            if (get_additional_info().includes("pallet") && calc_data["tabs"][active]["set_pallets"]){
+                step = 1;
+                set_container_types()
+            } else if (calc_data["tabs"][active]["set_pallets"]) {
+                step = 3;
+            }
+            if (calc_data["tabs"][active]["set_pallet_count"]){
+                set_pallet_count();
+            }
             calc_data["tabs"][active]["active"] = false;
-            calc_data["tabs"][active + 1]["active"] = true;
+            calc_data["tabs"][active + step]["active"] = true;
 
             dynamic_bodies.forEach( function (tab, i) {
-                if (i == active + 1) {
+                if (i == active + step) {
                     tab.classList.add("calc_right_part__active");
                 } else {
                     tab.classList.remove("calc_right_part__active");
@@ -578,12 +688,18 @@ function move_last_slide(){
     let active = get_active_tab_index();
     if (0 == active){
     } else {
+        var step = 1;
+        if (calc_data["tabs"].length - 1 == active){
+            if (get_pallet_types().length == 0){
+                step = 3;
+            }
+        }
         calc_data["tabs"][active]["value"] = get_step_value();
         calc_data["tabs"][active]["active"] = false;
-        calc_data["tabs"][active - 1]["active"] = true;
+        calc_data["tabs"][active - step]["active"] = true;
 
         dynamic_bodies.forEach( function (tab, i) {
-            if (i == active - 1) {
+            if (i == active - step) {
                 tab.classList.add("calc_right_part__active");
             } else {
                 tab.classList.remove("calc_right_part__active");

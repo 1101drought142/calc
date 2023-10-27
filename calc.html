@@ -92,6 +92,24 @@
         </div>
         <div class="calc_right_part">
             <h3 class="step_heading">
+                Личная информация
+            </h3>
+            <div id="inputs_container_count">
+                <input class="one_row_input" type="text" name="name[]" placeholder="ИП или ООО" style="margin-bottom: 10px;">
+                <input class="one_row_input" type="text" name="name[]" placeholder="ФИО" style="margin-bottom: 10px;">
+                <input class="one_row_input" type="text" name="name[]" placeholder="+7 (983) 313-70-82" style="margin-bottom: 10px;">
+            </div>
+            <div class="move_buttons_row">
+                <div class="move_button prev" >
+                    Назад
+                </div>
+                <div class="move_button next">
+                    Далее
+                </div>
+            </div>
+        </div>
+        <div class="calc_right_part">
+            <h3 class="step_heading">
                 Дополнительные услуги
             </h3>
             <div class="calc_buttons_row">
@@ -101,15 +119,15 @@
                 </label>
                 <label class="cart_variant_button">
                     <p>Паллетирование <br>(от 8 коробок обязательно)</p>
-                    <input type="checkbox" name="additional[]" value="palletirovanie" data-restriction data-minkorobki="8">
+                    <input type="checkbox" name="additional[]" value="palletirovanie" data-restriction data-minkorobkicheck="8">
                 </label>
                 <label class="cart_variant_button">
                     <p>Забор груза по городу, <br> < 6 коробок – 500 р</p>
-                    <input type="checkbox" name="additional[]" value="500" data-restriction data-maxkorobki="6">
+                    <input type="checkbox" name="additional[]" value="small_dostavka" data-restriction data-maxkorobki="6">
                 </label>
                 <label class="cart_variant_button">
                     <p>Забор груза по городу, <br> > 6 коробок – 1000 р</p>
-                    <input type="checkbox" name="additional[]" value="1000" data-restriction data-minkorobki="6"> 
+                    <input type="checkbox" name="additional[]" value="big_dostavka" data-restriction data-minkorobki="6"> 
                 </label>
             </div>
             <!-- <div class="calc_buttons_price_block_row">
@@ -145,7 +163,7 @@
             <h3 class="step_heading">
                 Виды палет
             </h3>
-            <div id="pallet_types">
+            <div id="pallet_types" class="calc_buttons_row">
                 
             </div>
             <div class="move_buttons_row">
@@ -161,7 +179,7 @@
             <h3 class="step_heading">
                 Количество палет
             </h3>
-            <div id="pallet_count">
+            <div id="pallet_count" class="calc_buttons_row">
                 
             </div>
             <div class="move_buttons_row">
