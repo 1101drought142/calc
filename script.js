@@ -1,83 +1,3 @@
-// var prices = {
-//     kazan : {
-//         rus_name: "Казань",
-//         ekaterinburg : {
-//             rus_name: "Екатеринбург",
-//             korobki : {
-//                 1 : 750,
-//                 2 : 1500,
-//                 3 : 2250,
-//                 4 : 3000,
-//                 5 : 3750,
-//                 6 : 4000,
-//                 7 : 4000,
-//                 8 : 4400,
-//                 9 : 4400,
-//                 10 : 4800,
-//             }
-//         },
-//         novosibirsk : {
-//             rus_name: "Новосибирск",
-//             korobki : {
-//                 1 : 1600,
-//                 2 : 3200,
-//                 3 : 4850,
-//                 4 : 6400,
-//                 5 : 7500,
-//                 6 : 7500,
-//                 7 : 7500,
-//                 8 : 7900,
-//                 9 : 7900,
-//                 10 : 8300,
-//             }
-//         },
-//         shushari : {
-//             rus_name: "Шушары",
-//             korobki : {
-//                 1 : 800,
-//                 2 : 1600,
-//                 3 : 2400,
-//                 4 : 3200,
-//                 5 : 4000,
-//                 6 : 4800,
-//                 7 : 5600,
-//                 8 : 6400,
-//                 9 : 6400,
-//                 10 : 6800,
-//             }
-//         },
-//         krasnodar : {
-//             rus_name: "Краснодар",
-//             korobki : {
-//                 1 : 800,
-//                 2 : 1600,
-//                 3 : 2400,
-//                 4 : 3200,
-//                 5 : 4000,
-//                 6 : 4800,
-//                 7 : 5600,
-//                 8 : 6400,
-//                 9 : 6400,
-//                 10 : 6800,
-//             }
-//         },
-//         mixed : {
-//             rus_name: "Коледино, Электросталь, Тула, Белые столбы, Софьино (ОЗ, ЯМ)",
-//             korobki : {
-//                 1 : 500,
-//                 2 : 1000,
-//                 3 : 1500,
-//                 4 : 2000,
-//                 5 : 2500,
-//                 6 : 3000,
-//                 7 : 3000,
-//                 8 : 3400,
-//                 9 : 3400,
-//                 10 : 4800,
-//             }
-//         }
-//     }
-// }
 var palets = [
     {
         name : "0-200 кг",
@@ -561,8 +481,6 @@ function add_pallets(container, priceblock){
 
 function set_result() {
 
-    document.getElementById("last_button").style.display = "none";
-
     fromblock = document.querySelector("[data-fromblock]");
     toblock = document.querySelector("[data-toblock]");
     count_blocks = document.querySelectorAll("[data-blockcount]");
@@ -633,7 +551,6 @@ function move_next_slide(){
     } else {
         
         if (get_step_value().length != 0 || calc_data["tabs"][active]["not_necessery"] == true) {
-            document.getElementById("last_button").style.display = "flex";
             var step = 1;
             if (calc_data["tabs"][active]["input_type"] == "radio"){
                 calc_data["tabs"][active]["value"] = get_step_value()[0];
