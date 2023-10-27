@@ -194,6 +194,9 @@ function get_boxes() {
 function get_box_count() {
     return calc_data["tabs"][3]["value"];
 }
+function get_personal() {
+    return calc_data["tabs"][4]["value"];
+}
 function get_additional_info() {
     return calc_data["tabs"][5]["value"];
 }
@@ -304,7 +307,7 @@ function set_restrictions(){
             }
         }
         if (restriction_block.dataset.minkorobkicheck) {
-            if ( +restriction_block.dataset.minkorobkicheck >= sum_list(get_box_count()) ){
+            if ( +restriction_block.dataset.minkorobkicheck <= sum_list(get_box_count()) ){
                 restriction_block.setAttribute('disabled', '');
                 restriction_block.checked = true;
 
@@ -412,9 +415,12 @@ function calc_result_price() {
     result = 0;
     id_list = get_boxes();
     count_list = get_box_count();
+    console.log(id_list);
+    console.log(count_list);
+    console.log(boxes)
     count_list.forEach(function (element, i) {
         temp_box = boxes[i];
-        console.log()
+        console.log(temp_box)
         result += temp_box["volume"] * element * prices[get_from_city()][get_to_city()]["korobki"]
     })
     return result;
@@ -638,3 +644,63 @@ prev_buttons.forEach(element => {
         move_last_slide();
     })
 });
+
+document.getElementById("last_button").addEventListener("click", function(event) {
+    dynamic_bodies.forEach( function (tab, i) {
+        tab.classList.remove("calc_right_part__active");
+    })
+    document.getElementById("result_block").classList.add("calc_right_part__active");
+
+    from_city = prices[get_from_city()]["rus_name"];
+    to_city = prices[get_from_city()][get_to_city()]["rus_name"]
+    
+    personal = "";
+
+    get_personal().forEach(function (element) {
+        personal += element + "\n";
+    })
+    var boxes_ = "";
+    var pallets = "";
+    var additional_info = "";
+    var result_price = calc_result_price().toFixed(3);
+    get_boxes().forEach(function (korobka_type_id, i) {
+        var temp_korobka = boxes[korobka_type_id];
+        boxes_ += `${temp_korobka["name"]}; Обьем : ${temp_korobka["volume"]}; Количество : ${get_box_count()[i]}; Цена за доставку коробок : ${temp_korobka["volume"] * get_box_count()[i] * prices[get_from_city()][get_to_city()]["korobki"]} Р \n`;
+    })
+    get_pallet_types().forEach(function (korobka_type_id, i) {
+        var temp_pallet = palets[korobka_type_id];
+        pallets += `Паллет : ${temp_pallet["name"]}; Количество : ${get_pallet_count()[i]}; Цена : ${(+get_pallet_count()[i] * +prices[get_from_city()][get_to_city()]["pallets"][korobka_type_id]).toFixed(2)} Р \n`;
+        result_price = result_price + (+get_pallet_count()[i] * +prices[get_from_city()][get_to_city()]["pallets"][korobka_type_id]).toFixed(2);
+    })
+    get_additional_info().forEach( function (additional) {
+        if (additional == "pallet"){
+            
+        } else {
+            if (additional == "small_dostavka"){
+                var row_name = "Доставка по городу";
+                var price = 500;
+            } else if (additional == "big_dostavka") {
+                var row_name = "Доставка по городу";
+                var price = 1000;
+            } else if (additional == "palletirovanie") {
+                var row_name = "Паллетирование";
+                if (sum_list(get_box_count()) >= 8) {
+                    var price = 800;
+                } else {
+                    var price = 400;
+                }
+            }
+            additional_info += `${row_name} Цена : ${price} Р\n`
+            result_price = result_price + price.toFixed(2);
+        }
+    })
+
+
+    console.log(from_city);
+    console.log(to_city);
+    console.log(result_price);
+    console.log(personal);
+    console.log(boxes_);
+    console.log(pallets);
+    console.log(additional_info);
+})
