@@ -78,7 +78,20 @@
 //         }
 //     }
 // }
-
+var palets = [
+    {
+        name : "0-200"
+    },
+    {
+        name : "200-300"
+    },
+    {
+        name : "300-400"
+    },
+    {
+        name : "400-500"
+    },
+]
 var boxes = [
     {
         name : "Коробка 60x40x40",
@@ -145,8 +158,13 @@ var calc_data = {
             input_name : "additional[]",
             input_type : "checkbox",
             value: [],
-            set_result: true,
+            
             not_necessery: true,
+        },
+        {
+            active : false,
+            value: [],
+            set_result: true,
         },
         {
             active : false,
@@ -159,30 +177,66 @@ var prices = {
         rus_name: "Казань",
         moscow : {
             rus_name: "Москва",
-            korobki : 5000
+            korobki : 5000,
+            pallets: [
+                4500,
+                5000,
+                5500,
+                6000
+            ]
         },
         shushari : {
             rus_name: "Шушары Краснодар",
-            korobki : 8300
+            korobki : 8300,
+            pallets: [
+                4500,
+                5000,
+                5500,
+                6000
+            ]
         },
     },
     moscow : {
         rus_name: "Москва",
-        moscow : {
+        kazan : {
             rus_name: "Казань",
             korobki : 7500,
+            pallets: [
+                4500,
+                5000,
+                5500,
+                6000
+            ]
         },
         shushari : {
-            rus_name: "Шушары Краснодар",
+            rus_name: "Шушары",
             korobki : 4800,
+            pallets: [
+                3500,
+                4000,
+                4500,
+                5000
+            ]
         },
         ekaterinburg : {
             rus_name: "Екатеринбург",
             korobki : 10000,
+            pallets: [
+                7500,
+                8000,
+                8500,
+                9000
+            ]
         },
         krasnodar : {
             rus_name: "Краснодар",
             korobki : 8000,
+            pallets: [
+                5500,
+                5000,
+                6500,
+                7000
+            ]
         },
     }
 }
@@ -190,6 +244,27 @@ var next_buttons = document.querySelectorAll(".next");
 var prev_buttons = document.querySelectorAll(".prev");
 var dynamic_bodies = document.querySelectorAll(".calc_right_part");
 
+
+function get_from_city() {
+    return calc_data["tabs"][0]["value"];
+}
+function get_to_city() {
+    return calc_data["tabs"][1]["value"];
+}
+function get_boxes() {
+    return calc_data["tabs"][2]["value"];
+}
+function get_box_count() {
+    return calc_data["tabs"][3]["value"];
+}
+
+function sum_list(list){
+    result = 0
+    list.forEach(function (element) {
+        result += +element
+    })
+    return result;
+}
 function calc_percent() {
     let tabs_length = calc_data["tabs"].length;
     let curent_tab = get_active_tab_index() + 1;
@@ -247,7 +322,7 @@ function get_active_tab_index(){
 function set_prices(){
     var inputs_container = document.getElementById("inputs_container_count");
     inputs_container.innerHTML = "";
-    calc_data["tabs"][2]["value"].forEach(function (korobka_type_id) {
+    get_boxes().forEach(function (korobka_type_id) {
         var temp_korobka = boxes[korobka_type_id];
         var input = document.createElement("input");
         input.className = "one_row_input";
@@ -258,7 +333,7 @@ function set_prices(){
         input.setAttribute('min', "0");
         var description = document.createElement("div");
         description.className = "two_list_blocks";
-        description.innerHTML = "<ul> <li> <span class='pink_color'>1</span> " + temp_korobka["name"] + " - <span class='pink_color'> <span>" + (+temp_korobka["volume"] * +prices[calc_data["tabs"][0]["value"]][calc_data["tabs"][1]["value"]]["korobki"]).toFixed(2)  + " руб </span></span></li> </ul>";
+        description.innerHTML = "<ul> <li> <span class='pink_color'>1</span> " + temp_korobka["name"] + " - <span class='pink_color'> <span>" + (+temp_korobka["volume"] * +prices[get_from_city()][get_to_city()]["korobki"]).toFixed(2)  + " руб </span></span></li> </ul>";
         inputs_container.appendChild(input)
         inputs_container.appendChild(description)
     })
@@ -268,14 +343,14 @@ function set_restrictions(){
     restriction_blocks = document.querySelectorAll("[data-restriction]");
     restriction_blocks.forEach( function (restriction_block) {
         if (restriction_block.dataset.maxkorobki){
-            if ( +restriction_block.dataset.maxkorobki < calc_data.tabs[3].value ){
+            if ( +restriction_block.dataset.maxkorobki < sum_list(get_box_count()) ){
                 restriction_block.setAttribute('disabled', '');
             } else {
                 restriction_block.removeAttribute('disabled');    
             }
         }
         if (restriction_block.dataset.minkorobki) {
-            if ( +restriction_block.dataset.minkorobki >= calc_data.tabs[3].value ){
+            if ( +restriction_block.dataset.minkorobki >= sum_list(get_box_count()) ){
                 restriction_block.setAttribute('disabled', '');
             } else {
                 restriction_block.removeAttribute('disabled');    
@@ -307,6 +382,28 @@ function set_cities(from_city) {
         }
     }
 }
+
+function set_container_types(){
+    container = document.getElementById("pallet_count");
+    container.innerHTML = "";
+    for (const [key, value] of Object.entries(palets)) {
+       
+        let label = document.createElement("label"); 
+        label.className = "cart_variant_button";
+        let text = document.createElement("p");
+        text.textContent = value.name;
+        let input = document.createElement("input");
+        input.setAttribute('type', 'radio');
+        input.setAttribute('name', "where");
+        if (calc_data["tabs"][1].length > 0){
+            input.setAttribute('checked');
+        }
+        input.value = key;
+        label.appendChild(text);
+        label.appendChild(input);
+        container.appendChild(label)
+    }
+}
 function set_korobki() {
     container = document.getElementById("korobki_container");
     container.innerHTML = "";
@@ -325,18 +422,12 @@ function set_korobki() {
     })
 }
 
-function sum_list(list){
-    result = 0
-    list.forEach(function (element) {
-        result += +element
-    })
-    return result;
-}
+
 
 function calc_volume() {
     result = 0;
-    id_list = calc_data.tabs[2]["value"];
-    count_list = calc_data.tabs[3]["value"];
+    id_list = get_boxes();
+    count_list = get_box_count();
     count_list.forEach(function (element, i) {
         temp_box = boxes[i];
         result += temp_box["volume"] * element
@@ -346,12 +437,12 @@ function calc_volume() {
 
 function calc_result_price() {
     result = 0;
-    id_list = calc_data.tabs[2]["value"];
-    count_list = calc_data.tabs[3]["value"];
+    id_list = get_boxes();
+    count_list = get_box_count();
     count_list.forEach(function (element, i) {
         temp_box = boxes[i];
         console.log()
-        result += temp_box["volume"] * element * prices[calc_data["tabs"][0]["value"]][calc_data["tabs"][1]["value"]]["korobki"]
+        result += temp_box["volume"] * element * prices[get_from_city()][get_to_city()]["korobki"]
     })
     return result;
 }
@@ -372,16 +463,16 @@ function set_result() {
     result_top_container = document.querySelector(".result_row__column");
     result_container = document.getElementById("result_calc_columnn");
 
-    fromblock.textContent = prices[calc_data.tabs[0]["value"]]["rus_name"];
-    toblock.textContent = prices[calc_data.tabs[0]["value"]][calc_data.tabs[1]["value"]]["rus_name"];
+    fromblock.textContent = prices[get_from_city()]["rus_name"];
+    toblock.textContent = prices[get_from_city()][get_from_city()]["rus_name"];
 
     count_blocks.forEach(element => {
-        element.textContent = sum_list(calc_data.tabs[3]["value"])
+        element.textContent = sum_list(get_box_count()["value"])
     });
     
     blockname_str = "";
     boxes.forEach(element => {
-        if (element.volume == calc_data.tabs[2]["value"]) {
+        if (element.volume == get_boxes()) {
             blockname_str = element.name;
         }
     });
@@ -407,10 +498,10 @@ function set_result() {
         result_row.className = "result_row result_row__extra_row";
         var result_row_name = document.createElement("div"); 
         result_row_name.className = "row_name";
-        result_row_name.textContent = boxes[element]["name"] + " объём " + +boxes[element]["volume"] * +calc_data["tabs"][3]["value"][i] + " м³";
+        result_row_name.textContent = boxes[element]["name"] + " объём " + (+boxes[element]["volume"] * +get_box_count()[i]).toFixed(2) + " м³";
         var result_row_value = document.createElement("div"); 
         result_row_value.className = "row_value";
-        result_row_value.textContent = +calc_data["tabs"][3]["value"][i] + " шт";
+        result_row_value.textContent = +get_box_count()[i] + " шт";
         result_row.append(result_row_name);
         result_row.append(result_row_value);
         result_top_container.append(result_row)    
@@ -462,6 +553,8 @@ function move_next_slide(){
             if (calc_data["tabs"][active]["set_korobki"]){
                 set_korobki();
             }
+
+
             calc_data["tabs"][active]["active"] = false;
             calc_data["tabs"][active + 1]["active"] = true;
 

@@ -95,14 +95,14 @@
                 Дополнительные услуги
             </h3>
             <div class="calc_buttons_row">
-                <!-- <label class="cart_variant_button">
-                    <p>Паллета - 250р</p>
-                    <input type="checkbox" name="additional[]" value="250">
+                <label class="cart_variant_button">
+                    <p>Добавить палеты</p>
+                    <input type="checkbox" name="additional[]" value="pallet">
                 </label>
                 <label class="cart_variant_button">
-                    <p>Паллетирование - 250р <br>(от 8 коробок)</p>
-                    <input type="checkbox" name="additional[]" value="250" data-restriction data-minkorobki="8">
-                </label> -->
+                    <p>Паллетирование <br>(от 8 коробок обязательно)</p>
+                    <input type="checkbox" name="additional[]" value="palletirovanie" data-restriction data-minkorobki="8">
+                </label>
                 <label class="cart_variant_button">
                     <p>Забор груза по городу, <br> < 6 коробок – 500 р</p>
                     <input type="checkbox" name="additional[]" value="500" data-restriction data-maxkorobki="6">
@@ -132,6 +132,38 @@
                     </div>
                 </div>
             </div> -->
+            <div class="move_buttons_row">
+                <div class="move_button prev" >
+                    Назад
+                </div>
+                <div class="move_button next">
+                    Далее
+                </div>
+            </div>
+        </div>
+        <div class="calc_right_part">
+            <h3 class="step_heading">
+                Виды палет
+            </h3>
+            <div id="pallet_types">
+                
+            </div>
+            <div class="move_buttons_row">
+                <div class="move_button prev" >
+                    Назад
+                </div>
+                <div class="move_button next">
+                    Далее
+                </div>
+            </div>
+        </div>
+        <div class="calc_right_part">
+            <h3 class="step_heading">
+                Количество палет
+            </h3>
+            <div id="pallet_count">
+                
+            </div>
             <div class="move_buttons_row">
                 <div class="move_button prev" >
                     Назад
