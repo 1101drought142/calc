@@ -1,15 +1,19 @@
 var palets = [
     {
         name : "0-200 кг",
+        maxweight: 200,
     },
     {
-        name : "200-300 кг"
+        name : "200-300 кг",
+        maxweight: 300,
     },
     {
-        name : "300-400 кг"
+        name : "300-400 кг",
+        maxweight: 400,
     },
     {
-        name : "400-500 кг"
+        name : "400-500 кг",
+        maxweight: 500,
     },
 ]
 var boxes = [
@@ -41,6 +45,10 @@ var boxes = [
         name : "Коробка 56x56x23",
         volume: 0.072,
     },
+    {
+        name : "Добавить свою",
+        volume: "add_box",
+    },
 ]
 
 var calc_data = {
@@ -57,51 +65,49 @@ var calc_data = {
             input_name : "where",
             input_type : "radio",
             value: 0,
-            set_korobki : true,
         },
         {
             active : false,
-            input_name : "box",
-            input_type : "checkbox",
-            value: [],
-            set_prices : true,
-        },
-        {
-            active : false,
-            input_name : "box_count[]",
-            input_type : "int",
+            input_name : "type_otpravlenie",
+            input_type : "radio",
             value: 0,
-            set_restriction: true,
-        },
-        {
-            active : false,
-            input_name : "name[]",
-            input_type : "text",
-            value: 0,
-            set_restriction: true,
-        },
-        {
-            active : false,
-            input_name : "additional[]",
-            input_type : "checkbox",
-            value: [],
-            set_pallets: true,
-            not_necessery: true,
-            set_result: true,
+            set_otpravlenie_content : true,
         },
         {
             active : false,
             input_name : "container_types[]",
             input_type : "checkbox",
             value: [],
-            set_pallet_count: true,
+            check_if_need_to_add_new_box : true,
+        },
+        {
+            active : false,
+            input_name : "parameters[]",
+            input_type : "number",
+            value: [],
+            go_back : true,
         },
         {
             active : false,
             input_name : "container_count[]",
-            input_type : "int",
+            input_type : "number",
+            value: 0,
+
+        },
+        {
+            active : false,
+            input_name : "name[]",
+            input_type : "text",
+            value: 0,
+            set_restriction : true,
+        },
+        {
+            active : false,
+            input_name : "additional[]",
+            input_type : "checkbox",
             value: [],
             set_result: true,
+            not_necessery: true,
         },
         {
             active : false,
@@ -112,24 +118,114 @@ var calc_data = {
 var prices = {
     kazan : {
         rus_name: "Казань",
-        moscow : {
-            rus_name: "Москва",
+        tula : {
+            rus_name: "Тула",
             korobki : 5000,
             pallets: [
+                3000,
+                3500,
                 4500,
-                5000,
-                5500,
-                6000
+                5000
+            ]
+        },
+        koledino : {
+            rus_name: "Коледино",
+            korobki : 5000,
+            pallets: [
+                3000,
+                3500,
+                4500,
+                5000
+            ]
+        },
+        elektrostal : {
+            rus_name: "Электросталь",
+            korobki : 5000,
+            pallets: [
+                3000,
+                3500,
+                4500,
+                5000
+            ]
+        },
+        podolsk : {
+            rus_name: "Подольск",
+            korobki : 5000,
+            pallets: [
+                3000,
+                3500,
+                4500,
+                5000
+            ]
+        },
+        beliestolbi : {
+            rus_name: "Белые столбы",
+            korobki : 5000,
+            pallets: [
+                3000,
+                3500,
+                4500,
+                5000
+            ]
+        },
+        yamsofino : {
+            rus_name: "ЯМ Софьино",
+            korobki : 5000,
+            pallets: [
+                3000,
+                3500,
+                4500,
+                5000
+            ]
+        },
+        ozon_sofiono : {
+            rus_name: "ОЗОН Софьино",
+            korobki : 5000,
+            pallets: [
+                3000,
+                3500,
+                4500,
+                5000
             ]
         },
         shushari : {
-            rus_name: "Шушары Краснодар",
+            rus_name: "Шушары",
             korobki : 8300,
             pallets: [
+                6000,
+                6500,
+                7000,
+                7500
+            ]
+        },
+        krasnodar : {
+            rus_name: "Краснодар",
+            korobki : 8300,
+            pallets: [
+                6000,
+                6500,
+                7000,
+                7500
+            ]
+        },
+        ekaterinburg : {
+            rus_name: "Екатеринбург",
+            korobki : 7500,
+            pallets: [
+                4000,
                 4500,
                 5000,
-                5500,
-                6000
+                5500
+            ]
+        },
+        novosibirsk : {
+            rus_name: "Новосибирск",
+            korobki : 16000,
+            pallets: [
+                7500,
+                8000,
+                8500,
+                9000
             ]
         },
     },
@@ -177,6 +273,9 @@ var prices = {
         },
     }
 }
+
+
+
 var next_buttons = document.querySelectorAll(".next");
 var prev_buttons = document.querySelectorAll(".prev");
 var dynamic_bodies = document.querySelectorAll(".calc_right_part");
@@ -188,24 +287,25 @@ function get_from_city() {
 function get_to_city() {
     return calc_data["tabs"][1]["value"];
 }
-function get_boxes() {
+function get_otpravlenie_type() {
     return calc_data["tabs"][2]["value"];
 }
-function get_box_count() {
+function get_container_types() {
     return calc_data["tabs"][3]["value"];
 }
-function get_personal() {
+function get_box_params() {
     return calc_data["tabs"][4]["value"];
 }
-function get_additional_info() {
+function get_container_count() {
     return calc_data["tabs"][5]["value"];
 }
-function get_pallet_types() {
+function get_personal() {
     return calc_data["tabs"][6]["value"];
 }
-function get_pallet_count() {
+function get_additional_info() {
     return calc_data["tabs"][7]["value"];
 }
+
 function sum_list(list){
     result = 0
     list.forEach(function (element) {
@@ -227,6 +327,7 @@ function set_percent() {
     document.getElementById("js_progress_count").textContent = percent;
 }
 function get_input_values(input_list){
+    let empty_flag = false;
     let res_values = [];
     input_list.forEach( function (input) {
         if (input.type == "radio" || input.type == "checkbox" || input.type == "number"){
@@ -234,6 +335,8 @@ function get_input_values(input_list){
                 res_values.push(input.value);
             } else if (input.value && input.type == "number"){
                 res_values.push(input.value);
+            } else if (!input.value && input.hasAttribute('required')){
+                empty_flag = true;
             }
         } else {
             if (input.value) {
@@ -241,6 +344,9 @@ function get_input_values(input_list){
             }
         }
     })
+    if (empty_flag){
+        return [];
+    }
     return res_values;
 }
 
@@ -267,23 +373,24 @@ function get_active_tab_index(){
     return active;
 }
 
-function set_prices(){
-    var inputs_container = document.getElementById("inputs_container_count");
-    inputs_container.innerHTML = "";
-    get_boxes().forEach(function (korobka_type_id) {
+function set_prices(container){
+    container.innerHTML = "";
+    get_container_types().forEach(function (korobka_type_id) {
         var temp_korobka = boxes[korobka_type_id];
         var input = document.createElement("input");
         input.className = "one_row_input";
         input.setAttribute('type', 'number');
-        input.setAttribute('name', "box_count[]");
+        input.setAttribute('name', "container_count[]");
+        input.setAttribute('required', "");
         input.setAttribute('placeholder', "Введите кол.во коробов для отправки (" + temp_korobka["name"] + ")");
         input.setAttribute('max', "16");
         input.setAttribute('min', "0");
+
         var description = document.createElement("div");
         description.className = "two_list_blocks";
         description.innerHTML = "<ul> <li> <span class='pink_color'>1</span> " + temp_korobka["name"] + " - <span class='pink_color'> <span>" + (+temp_korobka["volume"] * +prices[get_from_city()][get_to_city()]["korobki"]).toFixed(2)  + " руб </span></span></li> </ul>";
-        inputs_container.appendChild(input)
-        inputs_container.appendChild(description)
+        container.appendChild(input)
+        container.appendChild(description)
     })
 }
 
@@ -291,23 +398,37 @@ function set_restrictions(){
     restriction_blocks = document.querySelectorAll("[data-restriction]");
     restriction_blocks.forEach( function (restriction_block) {
         restriction_block.checked = false;
-
+        console.log(restriction_block.dataset.onlykorobki);
+        console.log(get_otpravlenie_type());
+        if (restriction_block.dataset.onlykorobki && get_otpravlenie_type() == "pallets"){
+            return;
+        }
+        if (restriction_block.dataset.onlykorobkiblock && get_otpravlenie_type() == "pallets"){
+            restriction_block.setAttribute('disabled', '');
+            return;
+        } else {
+            restriction_block.removeAttribute('disabled');    
+        }
+        if (restriction_block.dataset.pallets && get_otpravlenie_type() == "pallets"){
+            restriction_block.removeAttribute('disabled');
+            return;
+        }
         if (restriction_block.dataset.maxkorobki){
-            if ( +restriction_block.dataset.maxkorobki < sum_list(get_box_count()) ){
+            if ( +restriction_block.dataset.maxkorobki < sum_list(get_container_count()) ){
                 restriction_block.setAttribute('disabled', '');
             } else {
                 restriction_block.removeAttribute('disabled');    
             }
         }
         if (restriction_block.dataset.minkorobki) {
-            if ( +restriction_block.dataset.minkorobki >= sum_list(get_box_count()) ){
+            if ( +restriction_block.dataset.minkorobki >= sum_list(get_container_count()) ){
                 restriction_block.setAttribute('disabled', '');
             } else {
                 restriction_block.removeAttribute('disabled');    
             }
         }
         if (restriction_block.dataset.minkorobkicheck) {
-            if ( +restriction_block.dataset.minkorobkicheck <= sum_list(get_box_count()) ){
+            if ( +restriction_block.dataset.minkorobkicheck <= sum_list(get_container_count()) ){
                 restriction_block.setAttribute('disabled', '');
                 restriction_block.checked = true;
 
@@ -343,8 +464,7 @@ function set_cities(from_city) {
     }
 }
 
-function set_container_types(){
-    container = document.getElementById("pallet_types");
+function set_container_types(container){
     container.innerHTML = "";
     palets.forEach( function (box, i) {
         let label = document.createElement("label"); 
@@ -364,24 +484,24 @@ function set_container_types(){
     })
 }
 
-function set_pallet_count(){
-    var inputs_container = document.getElementById("pallet_count");
-    inputs_container.innerHTML = "";
-    get_pallet_types().forEach(function (korobka_type_id) {
+function set_pallet_count(container){
+    container.innerHTML = "";
+    get_container_types().forEach(function (korobka_type_id) {
         var temp_palet = palets[korobka_type_id];
         var input = document.createElement("input");
         input.className = "one_row_input";
         input.setAttribute('type', 'number');
         input.setAttribute('name', "container_count[]");
+        input.setAttribute('required', "");
+        input.style.marginBottom = "10px"
         input.setAttribute('placeholder', "Введите кол.во палетов для отправки (" + temp_palet["name"] + ")");
         input.setAttribute('max', "16");
         input.setAttribute('min', "0");
-        inputs_container.appendChild(input)
+        container.appendChild(input)
     })
 }
 
-function set_korobki() {
-    container = document.getElementById("korobki_container");
+function set_korobki(container) {
     container.innerHTML = "";
     boxes.forEach( function (box, i) {
         let label = document.createElement("label"); 
@@ -390,7 +510,7 @@ function set_korobki() {
         text.textContent = box.name;
         let input = document.createElement("input");
         input.setAttribute('type', 'checkbox');
-        input.setAttribute('name', "box");
+        input.setAttribute('name', "container_types[]");
         input.value = i;
         label.appendChild(text);
         label.appendChild(input);
@@ -398,104 +518,133 @@ function set_korobki() {
     })
 }
 
+function set_otpravlenie_content(){
+    let header = document.getElementById("otpravlenie_type_name");
+    let container = document.getElementById("otpravlenie_type_container");
+    if (get_otpravlenie_type() == "boxes"){
+        header.textContent = "Типы коробок";
+        set_korobki(container);
+    } else {
+        header.textContent = "Вес паллет";
+        set_container_types(container);
+    }
+}
+
+
+function set_otpravlenie_count_content(){
+    let header = document.getElementById("otpravlenie_type_count_name");
+    let container = document.getElementById("otpravlenie_type_count_container");
+    if (get_otpravlenie_type() == "boxes"){
+        header.textContent = "Количество коробок";
+        set_prices(container);
+    } else {
+        header.textContent = "Количество паллет";
+        set_pallet_count(container);
+    }
+}
 
 
 function calc_volume() {
     result = 0;
-    id_list = get_boxes();
-    count_list = get_box_count();
+    id_list = get_container_types();
+    count_list = get_container_count();
     count_list.forEach(function (element, i) {
-        temp_box = boxes[i];
+        temp_box = boxes[id_list[i]];
+        
+        console.log(element)
+        console.log(temp_box["volume"])
+
         result += temp_box["volume"] * element
     })
     return result;
 }
-
+function calc_result_price_pallets(){
+    result = 0;
+    id_list = get_container_types();
+    count_list = get_container_count();
+    count_list.forEach(function (element, i) {
+        temp_box_id = id_list[i];
+        result += element * prices[get_from_city()][get_to_city()]["pallets"][temp_box_id]
+    })
+    return result;
+}
+function calc_max_weight(){
+    result = 0;
+    id_list = get_container_types();
+    count_list = get_container_count();
+    count_list.forEach(function (element, i) {
+        temp_box = palets[id_list[i]];
+        result += temp_box["maxweight"] * element
+    })
+    return result;
+}
 function calc_result_price() {
     result = 0;
-    id_list = get_boxes();
-    count_list = get_box_count();
-    console.log(id_list);
-    console.log(count_list);
-    console.log(boxes)
+    id_list = get_container_types();
+    count_list = get_container_count();
     count_list.forEach(function (element, i) {
-        temp_box = boxes[i];
-        console.log(temp_box)
-        result += temp_box["volume"] * element * prices[get_from_city()][get_to_city()]["korobki"]
+        temp_box = boxes[id_list[i]];
+        let temp_r = temp_box["volume"] * element * prices[get_from_city()][get_to_city()]["korobki"];
+        result += temp_r;
     })
+    let max_price = prices[get_from_city()][get_to_city()]["pallets"][0];
+    if (result > max_price){
+        result = max_price;
+    }
     return result;
 }
 function add_additional_rows(container, priceblock) {
     get_additional_info().forEach( function (additional) {
-        if (additional == "pallet"){
-            add_pallets(container, priceblock);
-        } else {
-            if (additional == "small_dostavka"){
-                var row_name = "Доставка по городу";
-                var price = 500;
-            } else if (additional == "big_dostavka") {
-                var row_name = "Доставка по городу";
-                var price = 1000;
-            } else if (additional == "palletirovanie") {
-                var row_name = "Паллетирование";
-                if (sum_list(get_box_count()) >= 8) {
-                    var price = 800;
-                } else {
-                    var price = 400;
-                }
-                
-            }
-                
-            var result_row = document.createElement("div"); 
-            result_row.className = "result_row result_row__extra_row";
-            var result_row_name = document.createElement("div"); 
-            result_row_name.className = "row_name";
-            result_row_name.textContent = row_name;
-            var result_row_value = document.createElement("div"); 
-            result_row_value.className = "row_value";
-            result_row_value.textContent = price + " P";
-            result_row.append(result_row_name);
-            result_row.append(result_row_value);
-            container.append(result_row)    
-            priceblock.textContent = +priceblock.textContent + +price
-        }
-    })
-}
-
-function add_pallets(container, priceblock){
-    container_types = get_pallet_types();
-    container_count = get_pallet_count();
-    container_types.forEach( function (element, i) {
         
-        element_name = "Паллет " + palets[element]["name"] + " " + container_count[i] + " шт";
-        element_price = +container_count[i] * +prices[get_from_city()][get_to_city()]["pallets"][element];
-
+        if (additional == "small_dostavka"){
+            var row_name = "Доставка по городу";
+            var price = 500;
+        } else if (additional == "big_dostavka") {
+            var row_name = "Доставка по городу";
+            var price = 1000;
+        } else if (additional == "palletirovanie") {
+            var row_name = "Паллетирование";
+            if (get_otpravlenie_type() == "pallets"){
+                var price = 350 * +sum_list(get_container_count());
+            } else {
+                var price = 350;
+            }
+        } else if (additional == "pallet") {
+            var row_name = "Паллета";
+            if (get_otpravlenie_type() == "pallets"){
+                var price = 250 * +sum_list(get_container_count());
+            } else {
+                var price = 250;
+            }
+        }
+    
         var result_row = document.createElement("div"); 
         result_row.className = "result_row result_row__extra_row";
         var result_row_name = document.createElement("div"); 
         result_row_name.className = "row_name";
-        result_row_name.textContent = element_name;
+        result_row_name.textContent = row_name;
         var result_row_value = document.createElement("div"); 
         result_row_value.className = "row_value";
-        result_row_value.textContent = element_price + " P";
+        result_row_value.textContent = price + " P";
         result_row.append(result_row_name);
         result_row.append(result_row_value);
         container.append(result_row)    
-        priceblock.textContent = +priceblock.textContent + +element_price
-    });
+        priceblock.textContent = +priceblock.textContent + +price
+    })
 }
 
 function set_result() {
 
-    fromblock = document.querySelector("[data-fromblock]");
-    toblock = document.querySelector("[data-toblock]");
-    count_blocks = document.querySelectorAll("[data-blockcount]");
-    priceblock = document.querySelector("[data-resultprice]");
+    let fromblock = document.querySelector("[data-fromblock]");
+    let toblock = document.querySelector("[data-toblock]");
+    let count_blocks = document.querySelectorAll("[data-blockcount]");
+    let priceblock = document.querySelector("[data-resultprice]");
 
-    blockname = document.querySelectorAll("[data-blockname]");
-    blockvolume = document.querySelectorAll("[data-blockvolume]");
-    blockvolumeall = document.querySelectorAll("[data-blockvolumeall]");
-    
+    let blockvolumeall = document.querySelectorAll("[data-blockvolumeall]");
+    let otpravlenie_type_name = document.querySelectorAll("[data-otpravlenietype]");
+    let rowallname = document.querySelectorAll("[data-rowallname]");
+    let rowallcount = document.querySelectorAll("[data-rowallcount]");
+
     result_top_container = document.querySelector(".result_row__column");
     result_container = document.getElementById("result_calc_columnn");
 
@@ -504,41 +653,78 @@ function set_result() {
     toblock.textContent = prices[get_from_city()][get_to_city()]["rus_name"];
 
     count_blocks.forEach(element => {
-        element.textContent = sum_list(get_box_count())
+        element.textContent = sum_list(get_container_count())
     });
+    if (get_from_city() == "kazan") {
+        document.getElementById("moscow_text").style.display = "none";
+        document.getElementById("kazan_text").style.display = "block";
+    } else {
+        document.getElementById("moscow_text").style.display = "block";
+        document.getElementById("kazan_text").style.display = "none";
+    }
+    let rowallname_text = "";
+    let rowallcount_text = "";
+    if (get_otpravlenie_type() == "boxes") {
+        rowallname_text = "Всего коробов:";
+        rowallcount_text = "Общий объем коробов:";
+        blockvolumeall.forEach(element => {
+            element.textContent = calc_volume().toFixed(3) + "  м³";
+        });
+        priceblock.textContent = calc_result_price().toFixed(3);
+
+    } else if (get_otpravlenie_type() == "pallets"){
+        rowallname_text = "Всего палет:";
+        rowallcount_text = "Общий максимальный вес палет:";
+        blockvolumeall.forEach(element => {
+            element.textContent = calc_max_weight().toFixed(3) + "  кг";
+        });
+        priceblock.textContent = calc_result_price_pallets().toFixed(3);
+        
+    }
+
+    rowallname.forEach(element => {
+        element.textContent = rowallname_text;
+    })
+    rowallcount.forEach(element => {
+        element.textContent = rowallcount_text;
+    })
+
+    let text;
+    otpravlenie_type_name.forEach(element => {
     
-    blockname_str = "";
-    boxes.forEach(element => {
-        if (element.volume == get_boxes()) {
-            blockname_str = element.name;
+        if (get_otpravlenie_type() == "boxes") {
+            text = "Короб";
+        } else if (get_otpravlenie_type() == "pallets"){
+            text = "Паллеты";
         }
+        element.textContent = text;
     });
 
-    blockname.forEach(element => {
-        element.textContent = blockname_str;
-    });
-
-    blockvolumeall.forEach(element => {
-        element.textContent = calc_volume().toFixed(2);
-    });
-
-
-    priceblock.textContent = calc_result_price().toFixed(3);
 
     extra_rows = document.querySelectorAll(".result_row__extra_row");
     extra_rows.forEach( function (row) {
         row.remove()
     })
 
-    get_boxes().forEach( function (element, i) {
+    let container_text;
+    let container_quanity;
+    get_container_types().forEach( function (element, i) {
         var result_row = document.createElement("div"); 
         result_row.className = "result_row result_row__extra_row";
         var result_row_name = document.createElement("div"); 
         result_row_name.className = "row_name";
-        result_row_name.textContent = boxes[element]["name"] + " объём " + (+boxes[element]["volume"] * +get_box_count()[i]).toFixed(2) + " м³";
+
+        if (get_otpravlenie_type() == "boxes") {
+            container_text = boxes[element]["name"] + " объём " + (boxes[element]["volume"] * get_container_count()[i]).toFixed(3) + " м³";
+            container_quanity = +get_container_count()[i] + " шт";
+        } else if (get_otpravlenie_type() == "pallets"){
+            container_text = "Паллета " + palets[element]["name"];
+            container_quanity = +get_container_count()[i] + " шт";
+        }
+        result_row_name.textContent = container_text;
         var result_row_value = document.createElement("div"); 
         result_row_value.className = "row_value";
-        result_row_value.textContent = +get_box_count()[i] + " шт";
+        result_row_value.textContent = container_quanity;
         result_row.append(result_row_name);
         result_row.append(result_row_value);
         result_top_container.append(result_row)    
@@ -550,6 +736,29 @@ function set_result() {
     }
 }
 
+function add_new_box(){
+    
+    height = get_box_params()[0];
+    width = get_box_params()[1];
+    lenght = get_box_params()[2];
+    
+    element = {
+        name : `Коробка ${height}x${width}x${lenght}`,
+        volume : +((+height * +width * +lenght) / 1000000).toFixed(3)
+    }
+
+    boxes.splice( boxes.length - 1, 0, element);
+}
+
+function check_if_need_to_add_box(){
+    let flag = false
+    get_container_types().forEach( function (element) {
+        if (boxes[element].volume == "add_box"){
+            flag = true;
+        }
+    })
+    return flag;
+}
 function move_next_slide(){
     let active = get_active_tab_index();
     if (calc_data["tabs"].length - 1 == active){
@@ -558,36 +767,45 @@ function move_next_slide(){
         
         if (get_step_value().length != 0 || calc_data["tabs"][active]["not_necessery"] == true) {
             var step = 1;
+            
             if (calc_data["tabs"][active]["input_type"] == "radio"){
                 calc_data["tabs"][active]["value"] = get_step_value()[0];
             } else {
                 calc_data["tabs"][active]["value"] = get_step_value();
             }
-
-            if (calc_data["tabs"][active]["set_prices"]){
-                set_prices();
-            }
-            if (calc_data["tabs"][active]["set_restriction"]){
-                set_restrictions();
-            }
-            if (calc_data["tabs"][active]["set_result"]){
-                set_result();
-            }
+            //step 1
             if (calc_data["tabs"][active]["set_cities"]){
                 set_cities(calc_data["tabs"][active]["value"]);
             }
-            if (calc_data["tabs"][active]["set_korobki"]){
-                set_korobki();
+            //step 3
+            if (calc_data["tabs"][active]["set_otpravlenie_content"]){
+                set_otpravlenie_content();
             }
-            if (get_additional_info().includes("pallet") && calc_data["tabs"][active]["set_pallets"]){
-                step = 1;
-                set_container_types()
-            } else if (calc_data["tabs"][active]["set_pallets"]) {
-                step = 3;
+            //step 4
+            if (calc_data["tabs"][active]["check_if_need_to_add_new_box"]){
+                if (check_if_need_to_add_box()) {
+                    step = 1;
+                } else {
+                    set_otpravlenie_count_content();
+                    step = 2;
+
+                }
             }
-            if (calc_data["tabs"][active]["set_pallet_count"]){
-                set_pallet_count();
+            // extra step to add new box 
+            if (calc_data["tabs"][active]["go_back"]){
+                add_new_box();
+                set_otpravlenie_content();
+                step = -1;
             }
+            //step 5
+            if (calc_data["tabs"][active]["set_restriction"]){
+                set_restrictions();
+            }
+            //step 6
+            if (calc_data["tabs"][active]["set_result"]){
+                set_result();
+            }
+
             calc_data["tabs"][active]["active"] = false;
             calc_data["tabs"][active + step]["active"] = true;
 
@@ -598,7 +816,6 @@ function move_next_slide(){
                     tab.classList.remove("calc_right_part__active");
                 }
             })
-            console.log(calc_data);
             set_percent();
             document.getElementById("error_span").textContent = ""; 
         } else {
@@ -612,15 +829,15 @@ function move_last_slide(){
     if (0 == active){
     } else {
         var step = 1;
-        if (calc_data["tabs"].length - 1 == active){
-            if (get_pallet_types().length == 0){
-                step = 3;
-            }
+        
+        if (calc_data["tabs"][active - step]["go_back"]){
+            step = 2;
         }
+
         calc_data["tabs"][active]["value"] = get_step_value();
         calc_data["tabs"][active]["active"] = false;
         calc_data["tabs"][active - step]["active"] = true;
-
+        
         dynamic_bodies.forEach( function (tab, i) {
             if (i == active - step) {
                 tab.classList.add("calc_right_part__active");
@@ -657,50 +874,78 @@ document.getElementById("last_button").addEventListener("click", function(event)
     personal = "";
 
     get_personal().forEach(function (element) {
-        personal += element + "\n";
+        personal += element + ",";
     })
-    var boxes_ = "";
-    var pallets = "";
+    var containers = "";
     var additional_info = "";
-    var result_price = calc_result_price().toFixed(3);
-    get_boxes().forEach(function (korobka_type_id, i) {
-        var temp_korobka = boxes[korobka_type_id];
-        boxes_ += `${temp_korobka["name"]}; Обьем : ${temp_korobka["volume"]}; Количество : ${get_box_count()[i]}; Цена за доставку коробок : ${temp_korobka["volume"] * get_box_count()[i] * prices[get_from_city()][get_to_city()]["korobki"]} Р \n`;
-    })
-    get_pallet_types().forEach(function (korobka_type_id, i) {
-        var temp_pallet = palets[korobka_type_id];
-        pallets += `Паллет : ${temp_pallet["name"]}; Количество : ${get_pallet_count()[i]}; Цена : ${(+get_pallet_count()[i] * +prices[get_from_city()][get_to_city()]["pallets"][korobka_type_id]).toFixed(2)} Р \n`;
-        result_price = result_price + (+get_pallet_count()[i] * +prices[get_from_city()][get_to_city()]["pallets"][korobka_type_id]).toFixed(2);
-    })
+    var result_price = 0;
+    if (get_otpravlenie_type() == "boxes") {
+        get_container_types().forEach(function (korobka_type_id, i) {
+            var temp_korobka = boxes[korobka_type_id];
+            containers += `${temp_korobka["name"]}; Обьем : ${temp_korobka["volume"]} м2; Количество : ${get_container_count()[i]}; Цена за доставку коробок : ${(temp_korobka["volume"] * get_container_count()[i] * prices[get_from_city()][get_to_city()]["korobki"]).toFixed(3) } Р \n`;
+        })
+        var result_price = parseFloat(calc_result_price().toFixed(3));
+
+    } else if (get_otpravlenie_type() == "pallets"){
+        get_container_types().forEach(function (korobka_type_id, i) {
+            var temp_pallet = palets[korobka_type_id];
+            containers += `Паллет : ${temp_pallet["name"]}; Количество : ${get_container_count()[i]}; Цена : ${(+get_container_count()[i] * +prices[get_from_city()][get_to_city()]["pallets"][korobka_type_id]).toFixed(2)} Р \n`;
+        })
+        var result_price = parseFloat(calc_result_price_pallets().toFixed(3));
+
+    }
+
     get_additional_info().forEach( function (additional) {
-        if (additional == "pallet"){
-            
-        } else {
-            if (additional == "small_dostavka"){
-                var row_name = "Доставка по городу";
-                var price = 500;
-            } else if (additional == "big_dostavka") {
-                var row_name = "Доставка по городу";
-                var price = 1000;
-            } else if (additional == "palletirovanie") {
-                var row_name = "Паллетирование";
-                if (sum_list(get_box_count()) >= 8) {
-                    var price = 800;
-                } else {
-                    var price = 400;
-                }
-            }
-            additional_info += `${row_name} Цена : ${price} Р\n`
-            result_price = result_price + price.toFixed(2);
+    
+        if (additional == "small_dostavka"){
+            var row_name = "Доставка по городу";
+            var price = 500;
+        } else if (additional == "big_dostavka") {
+            var row_name = "Доставка по городу";
+            var price = 1000;
+        } else if (additional == "palletirovanie") {
+            var row_name = "Паллетирование";
+            var price = 350;
+        } else if (additional == "pallet") {
+            var row_name = "Паллета";
+            var price = 250;
         }
+        additional_info += `${row_name} Цена : ${price} Р\n`
+        result_price = parseFloat(result_price) + parseFloat(price.toFixed(2));
     })
+    // Создать объект XMLHttpRequest
+    let xhr = new XMLHttpRequest();
+    let formData = new FormData();
+    xhr.open('POST', 'send_message_calc.php');
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status === 200) {
+                // Обработать успешный ответ
+                let response = xhr.responseText;
+                if (response.success === false) {
+                    console.log("error")
+                } else {
+                    // Перенаправить на другую страницу
+                    console.log("success")
+                    console.log(response)
+                }
+            } else {
+                // Обработать ошибку запроса
+                console.error('Ошибка запроса:', xhr.status);
+            }
+        }
+    };
+    formData.append("from_city", from_city);
+    formData.append("to_city", to_city);
+    formData.append("result_price", result_price);
+    formData.append("personal", personal);
+    formData.append("containers", containers);
+    formData.append("additional_info", additional_info);
+    formData.append("type", get_otpravlenie_type());
+    // Отправить данные формы
+    xhr.send(formData);
 
 
-    console.log(from_city);
-    console.log(to_city);
     console.log(result_price);
-    console.log(personal);
-    console.log(boxes_);
-    console.log(pallets);
-    console.log(additional_info);
+
 })

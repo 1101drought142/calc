@@ -1,3 +1,21 @@
+/* Делаем место у слайдера под калькулятор */
+.swiper-main .swiper-slide .slide__wrap {
+    padding-bottom: 15rem;
+}
+
+.calculator_ {
+    position: relative;
+    margin-top: -12rem;
+    z-index: 2;
+}
+.calculator_wrap {
+    min-height: 400px;
+    padding: 2rem;
+    background: #fff;
+    border-radius: 10px;
+    -webkit-box-shadow: 0 4px 40px 0 rgba(0, 0, 0, 0.25);
+    box-shadow: 0 4px 40px 0 rgba(0, 0, 0, 0.25);
+}
 .calculator {
     width: 100%;
     max-width: 1200px;
@@ -5,6 +23,10 @@
 .calc_left_part {
     display: flex;
     flex-direction: column;
+}
+.cart_variant_button > p {
+    margin-block-start: 1em;
+    margin-block-end: 1em;
 }
 .calc_progress_bar {
     margin-top: auto;

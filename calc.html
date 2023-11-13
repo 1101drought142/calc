@@ -1,5 +1,3 @@
-<link rel="stylesheet" href="style.css">
-
 <section class="calculator">
     <div class="calc_flex">
         <div class="calc_left_part">
@@ -9,7 +7,7 @@
                 </h3>
                 <span class="error_span" id="error_span"></span>
                 <div class="calc_img">
-                    <img src="img/calc_image.png" alt="Фото калькулятора">
+                    <img src="/local/templates/main_catalog/img/calc/calc_image.png" alt="Фото калькулятора">
                 </div>
             </div>
             <div class="calc_progress_bar">
@@ -36,9 +34,6 @@
                 </label>
             </div>
             <div class="move_buttons_row">
-                <div class="move_button prev" >
-                    Назад
-                </div>
                 <div class="move_button next">
                     Далее
                 </div>
@@ -61,9 +56,32 @@
         </div>
         <div class="calc_right_part">
             <h3 class="step_heading">
-                Типы коробок            
+                В чем будете перевозить груз
             </h3>
-            <div class="calc_buttons_row" id="korobki_container">
+            <div class="calc_buttons_row" >
+                <label class="cart_variant_button">
+                    <p>В коробках</p>
+                    <input type="radio" value="boxes" name="type_otpravlenie">
+                </label>
+                <label class="cart_variant_button">
+                    <p>На паллетах</p>
+                    <input type="radio" value="pallets" name="type_otpravlenie">
+                </label>
+            </div>
+            <div class="move_buttons_row">
+                <div class="move_button prev" >
+                    Назад
+                </div>
+                <div class="move_button next">
+                    Далее
+                </div>
+            </div>
+        </div>
+        <div class="calc_right_part">
+            <h3 class="step_heading" id="otpravlenie_type_name">
+
+            </h3>
+            <div class="calc_buttons_row" id="otpravlenie_type_container" style="margin-bottom: 20px;">
             </div>
             <div class="move_buttons_row">
                 <div class="move_button prev" >
@@ -76,9 +94,27 @@
         </div>
         <div class="calc_right_part">
             <h3 class="step_heading">
-                Количество коробок для отправки
+                Добавить новую коробку
             </h3>
             <div id="inputs_container_count">
+                <input class="one_row_input" type="number" required name="parameters[]" placeholder="Высота, см" style="margin-bottom: 10px;">
+                <input class="one_row_input" type="number" required name="parameters[]" placeholder="Ширина, см" style="margin-bottom: 10px;">
+                <input class="one_row_input" type="number" required name="parameters[]" placeholder="Длинна, см" style="margin-bottom: 10px;">
+            </div>
+            <div class="move_buttons_row">
+                <div class="move_button prev" >
+                    Назад
+                </div>
+                <div class="move_button next">
+                    Далее
+                </div>
+            </div>
+        </div>
+        <div class="calc_right_part">
+            <h3 class="step_heading" id="otpravlenie_type_count_name">
+
+            </h3>
+            <div id="otpravlenie_type_count_container">
                 
             </div>
             <div class="move_buttons_row">
@@ -96,8 +132,9 @@
             </h3>
             <div id="inputs_container_count">
                 <input class="one_row_input" type="text" name="name[]" placeholder="ИП или ООО" style="margin-bottom: 10px;">
-                <input class="one_row_input" type="text" name="name[]" placeholder="ФИО" style="margin-bottom: 10px;">
-                <input class="one_row_input" type="text" name="name[]" placeholder="+7 (___) ___-__-__" style="margin-bottom: 10px;">
+                            <input class="one_row_input" type="text" name="name[]" placeholder="ФИО" style="margin-bottom: 10px;">
+                            <input class="one_row_input" type="text" name="name[]" placeholder="Почта" style="margin-bottom: 10px;">
+                            <input class="one_row_input mask-phone" type="text" name="name[]" placeholder="+7 (___) ___-__-__" style="margin-bottom: 10px;">
             </div>
             <div class="move_buttons_row">
                 <div class="move_button prev" >
@@ -114,73 +151,21 @@
             </h3>
             <div class="calc_buttons_row">
                 <label class="cart_variant_button">
-                    <p>Добавить палеты</p>
-                    <input type="checkbox" name="additional[]" value="pallet">
+                    <p>Палета (от 10 коробок обязательно)</p>
+                    <input type="checkbox" name="additional[]" value="pallet" data-restriction data-onlykorobki="true" data-minkorobkicheck="10">
                 </label>
                 <label class="cart_variant_button">
                     <p>Паллетирование <br>(от 8 коробок обязательно)</p>
-                    <input type="checkbox" name="additional[]" value="palletirovanie" data-restriction data-minkorobkicheck="8">
+                    <input type="checkbox" name="additional[]" value="palletirovanie" data-restriction data-onlykorobki="true" data-minkorobkicheck="8">
                 </label>
                 <label class="cart_variant_button">
-                    <p>Забор груза по городу, <br> < 6 коробок – 500 р</p>
-                    <input type="checkbox" name="additional[]" value="small_dostavka" data-restriction data-maxkorobki="6">
+                    <p>Забор груза по городу, <br> > 10 коробок – 500 р</p>
+                    <input type="checkbox" name="additional[]" value="small_dostavka" data-restriction data-onlykorobkiblock="true" data-maxkorobki="10">
                 </label>
                 <label class="cart_variant_button">
-                    <p>Забор груза по городу, <br> > 6 коробок – 1000 р</p>
-                    <input type="checkbox" name="additional[]" value="big_dostavka" data-restriction data-minkorobki="6"> 
+                    <p>Забор груза по городу, <br> < 10 коробок или паллеты – 1000 р</p>
+                    <input type="checkbox" name="additional[]" value="big_dostavka" data-restriction data-pallets="true" data-minkorobki="10"> 
                 </label>
-            </div>
-            <!-- <div class="calc_buttons_price_block_row">
-                <div class="calc_buttons_price_block">
-                    <div class="sub_head_calc">
-                        Цена за 1 паллеты по весу:
-                    </div>
-                    <div class="sub_block_calc">
-                        <p>
-                            Краснодар, Санкт-Петербург
-                        </p>
-                        <ul>
-                            <li>
-                                <span class="pink_color">0-200</span> кг. – <span class="pink_color">6000 р</span>, <span class="pink_color">5500 р</span>
-                            </li>
-                            <li>
-                                <span class="pink_color">+100 кг. = 500 рублей (для каждого направления)</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div> -->
-            <div class="move_buttons_row">
-                <div class="move_button prev" >
-                    Назад
-                </div>
-                <div class="move_button next">
-                    Далее
-                </div>
-            </div>
-        </div>
-        <div class="calc_right_part">
-            <h3 class="step_heading">
-                Виды палет
-            </h3>
-            <div id="pallet_types" class="calc_buttons_row">
-                
-            </div>
-            <div class="move_buttons_row">
-                <div class="move_button prev" >
-                    Назад
-                </div>
-                <div class="move_button next">
-                    Далее
-                </div>
-            </div>
-        </div>
-        <div class="calc_right_part">
-            <h3 class="step_heading">
-                Количество палет
-            </h3>
-            <div id="pallet_count" class="calc_buttons_row">
-                
             </div>
             <div class="move_buttons_row">
                 <div class="move_button prev" >
@@ -198,32 +183,44 @@
                 </h3>
                 <div class="destination_block_inner">
                     <div class="dest_block" data-fromblock>
-                        Москва
                     </div>
                     <img src="img/arrow.svg" alt="" class="arrow">
                     <div class="dest_block" data-toblock>
-                        Краснодар
                     </div> 
                 </div>
             </div>
             <div class="background_calc_result" id="result_calc_columnn">
                 <div class="result_row calc_heading_row">
                     <div class="row_name">Форма отгрузки</div>
-                    <div class="row_value">Короб</div>
+                    <div class="row_value" data-otpravlenietype>Короб</div>
                 </div>
                 <div class="result_row__column result_calc_border_bottom">
                 </div>
                 
                 <div class="result_row ">
-                    <div class="row_name">Всего коробов:</div>
+                    <div class="row_name" data-rowallname>Всего коробов:</div>
                     <div class="row_value"><span data-blockcount></span> шт</div>
                 </div>
                 <div class="result_row ">
-                    <div class="row_name">Общий объем коробов:</div>
-                    <div class="row_value"><span data-blockvolumeall></span> м³</div>
+                    <div class="row_name" data-rowallcount>Общий объем коробов:</div>
+                    <div class="row_value"><span data-blockvolumeall></span></div>
                 </div>
 
             </div>
+            <p style="display: none" id="moscow_text">
+                Минимальная стоимость коробки: <br>
+                Казань - 750₽ <br>
+                Екатеринбург- 1000₽ <br>
+                Шушары - 500₽ <br>
+                Краснодар - 800₽ <br>
+            </p>
+            <p style="display: none" id="kazan_text">
+                Минимальная стоимость для коробок: <br>
+                Тула, Коледино, Электросталь, Подольск, Белые столбы, Яндекс маркет (Софьино), Озон (Софьино) - 500₽; <br>
+                Краснодар, Шушары - 800₽ <br>
+                Екатеринбург - 750₽; <br>
+                Новосибирск - 1600₽ <br>
+            </p>
             <div class="result_price">
                 Итого: <span class="pink_color"> <span data-resultprice>4 540</span> P</span>
             </div>
@@ -249,5 +246,3 @@
         </div>
     </div>
 </section>
-
-<script src="script.js"></script>
