@@ -120,7 +120,7 @@ var prices = {
         rus_name: "Казань",
         tula : {
             rus_name: "Тула",
-            korobki : 5000,
+            korobki : 5210,
             pallets: [
                 3000,
                 3500,
@@ -130,7 +130,7 @@ var prices = {
         },
         koledino : {
             rus_name: "Коледино",
-            korobki : 5000,
+            korobki : 5210,
             pallets: [
                 3000,
                 3500,
@@ -140,7 +140,7 @@ var prices = {
         },
         elektrostal : {
             rus_name: "Электросталь",
-            korobki : 5000,
+            korobki : 5210,
             pallets: [
                 3000,
                 3500,
@@ -150,7 +150,7 @@ var prices = {
         },
         podolsk : {
             rus_name: "Подольск",
-            korobki : 5000,
+            korobki : 5210,
             pallets: [
                 3000,
                 3500,
@@ -160,7 +160,7 @@ var prices = {
         },
         beliestolbi : {
             rus_name: "Белые столбы",
-            korobki : 5000,
+            korobki : 5210,
             pallets: [
                 3000,
                 3500,
@@ -170,7 +170,7 @@ var prices = {
         },
         yamsofino : {
             rus_name: "ЯМ Софьино",
-            korobki : 5000,
+            korobki : 5210,
             pallets: [
                 3000,
                 3500,
@@ -180,7 +180,7 @@ var prices = {
         },
         ozon_sofiono : {
             rus_name: "ОЗОН Софьино",
-            korobki : 5000,
+            korobki : 5210,
             pallets: [
                 3000,
                 3500,
@@ -190,7 +190,7 @@ var prices = {
         },
         shushari : {
             rus_name: "Шушары",
-            korobki : 8300,
+            korobki : 8340,
             pallets: [
                 6000,
                 6500,
@@ -200,7 +200,7 @@ var prices = {
         },
         krasnodar : {
             rus_name: "Краснодар",
-            korobki : 8300,
+            korobki : 8340,
             pallets: [
                 6000,
                 6500,
@@ -210,7 +210,7 @@ var prices = {
         },
         ekaterinburg : {
             rus_name: "Екатеринбург",
-            korobki : 7500,
+            korobki : 7815,
             pallets: [
                 4000,
                 4500,
@@ -220,7 +220,7 @@ var prices = {
         },
         novosibirsk : {
             rus_name: "Новосибирск",
-            korobki : 16000,
+            korobki : 16670,
             pallets: [
                 7500,
                 8000,
@@ -233,7 +233,7 @@ var prices = {
         rus_name: "Москва",
         kazan : {
             rus_name: "Казань",
-            korobki : 7500,
+            korobki : 7815,
             pallets: [
                 4500,
                 5000,
@@ -243,7 +243,7 @@ var prices = {
         },
         shushari : {
             rus_name: "Шушары",
-            korobki : 4800,
+            korobki : 5210,
             pallets: [
                 3500,
                 4000,
@@ -253,7 +253,7 @@ var prices = {
         },
         ekaterinburg : {
             rus_name: "Екатеринбург",
-            korobki : 10000,
+            korobki : 10420,
             pallets: [
                 7500,
                 8000,
@@ -263,7 +263,7 @@ var prices = {
         },
         krasnodar : {
             rus_name: "Краснодар",
-            korobki : 8000,
+            korobki : 8340,
             pallets: [
                 5500,
                 5000,
