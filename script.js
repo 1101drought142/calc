@@ -99,7 +99,7 @@ var calc_data = {
             input_name : "container_count[]",
             input_type : "number",
             value: 0,
-
+            set_count : true,
         },
         {
             active : false,
@@ -411,7 +411,7 @@ function set_prices(container){
 
         var description = document.createElement("div");
         description.className = "two_list_blocks";
-        description.innerHTML = "<ul> <li> <span class='pink_color'>1</span> " + temp_korobka["name"] + " - <span class='pink_color'> <span>" + (+temp_korobka["volume"] * +prices[get_from_city()][get_to_city()]["korobki"]).toFixed(2)  + " руб </span></span></li> </ul>";
+        description.innerHTML = "<ul> <li> <span class='pink_color'>1</span> " + temp_korobka["name"] + " - <span class='pink_color'> <span>" + (+temp_korobka["volume"] * +prices[get_from_city()][current_where]["korobki"]).toFixed(2)  + " руб </span></span></li> </ul>";
         container.appendChild(input)
         container.appendChild(description)
     })
@@ -499,6 +499,8 @@ function set_cities_types(){
 
         status_image.className = "choosen_city_img";
         status_image.src = no_status;
+        status_image.dataset.code = city;
+
 
         city_container.className = "choosen_city";
 
@@ -520,7 +522,29 @@ function set_cities_types(){
     document.getElementById("where_block").textContent = "Текущий город - " + prices[get_from_city()][current_where]["rus_name"];
 }
 
-
+function get_next_city(){
+    for (const [key, value] of Object.entries(cities_data)) {
+        console.log(key, value)
+        if (!value["is_finished"]){
+            return key; 
+        }
+    }
+}   
+function check_if_city_is_finished(code){
+    if (cities_data[code]["type"] && cities_data[code]["count"] && cities_data[code]["types"]){
+        cities_data[code]["is_finished"] = true;
+        return true;
+    }
+    return false;
+}
+function check_if_cities_is_finished(){
+    for (const [key, value] of Object.entries(cities_data)) {
+        if (!check_if_city_is_finished(key)){
+            return false;
+        }
+    }
+    return true;
+}
 function set_container_types(container){
     container.innerHTML = "";
     palets.forEach( function (box, i) {
@@ -686,7 +710,7 @@ function add_additional_rows(container, priceblock) {
         result_row_value.className = "row_value";
         result_row_value.textContent = price + " P";
         result_row.append(result_row_name);
-let priceblock24 = $('*[placeholder="Другая сумма"]');;
+        let priceblock24 = $('*[placeholder="Другая сумма"]');;
 
         //     console.log(priceblock24);
 
@@ -861,6 +885,8 @@ function move_next_slide(){
             } else {
                 calc_data["tabs"][active]["value"] = get_step_value();
             }
+
+
             //step 1
             if (calc_data["tabs"][active]["set_cities"]){
                 set_cities(calc_data["tabs"][active]["value"]);
@@ -872,6 +898,7 @@ function move_next_slide(){
             //step 3
             if (calc_data["tabs"][active]["set_otpravlenie_content"]){
                 set_otpravlenie_content();
+                cities_data[current_where]["type"] = get_step_value()[0];
             }
             //step 4
             if (calc_data["tabs"][active]["check_if_need_to_add_new_box"]){
@@ -880,14 +907,29 @@ function move_next_slide(){
                 } else {
                     set_otpravlenie_count_content();
                     step = 2;
-
                 }
+                cities_data[current_where]["types"] = get_step_value();
             }
             // extra step to add new box 
             if (calc_data["tabs"][active]["go_back"]){
                 add_new_box();
                 set_otpravlenie_content();
                 step = -1;
+            }
+            //set count of boxes 
+            if (calc_data["tabs"][active]["set_count"]){
+                cities_data[current_where]["count"] = get_step_value();
+                if (check_if_cities_is_finished()){
+                    console.log("test")
+                    document.getElementById("where_block").textContent = "Все города заполнены";
+                }
+                else if (check_if_city_is_finished(current_where)){
+                    image = document.querySelector("[data-code=" + current_where);
+                    image.src = yes_status;
+                    current_where = get_next_city();
+                    document.getElementById("where_block").textContent = "Текущий город - " + prices[get_from_city()][current_where]["rus_name"];
+                    step = -3;
+                }
             }
             //step 5
             if (calc_data["tabs"][active]["set_restriction"]){
