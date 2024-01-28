@@ -287,3 +287,26 @@
 #korobki_container {
     margin-bottom: 20px;
 }
+.choosen_cities {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+.choosen_city_img {
+    width: 20px;
+    height: 20px;
+    display: inline;
+}
+.choosen_city > p {
+    display: inline;
+    margin: 0;
+}
+.choosen_city {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 5px;
+    border: 1px solid black;
+    border-radius: 5px;
+}

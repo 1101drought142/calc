@@ -1,3 +1,9 @@
+let dateInput = document.getElementById("start-date");
+dateInput.min = new Date().toISOString().slice(0,new Date().toISOString().lastIndexOf(":"));
+const yes_status = "img/Yes_Check_Circle.svg.png";
+const no_status = "img/istockphoto-1294482883-612x612.jpg";
+var current_where = null;
+var cities_data = {};
 var palets = [
     {
         name : "0-200 кг",
@@ -63,8 +69,9 @@ var calc_data = {
         {
             active : false,
             input_name : "where",
-            input_type : "radio",
+            input_type : "checkbox",
             value: 0,
+            set_where_data: true,
         },
         {
             active : false,
@@ -202,10 +209,10 @@ var prices = {
             rus_name: "Краснодар",
             korobki : 8340,
             pallets: [
-                6000,
                 6500,
                 7000,
-                7500
+                7500,
+                8000
             ]
         },
         ekaterinburg : {
@@ -226,6 +233,16 @@ var prices = {
                 8000,
                 8500,
                 9000
+            ]
+        },
+        nevinomisk : {
+            rus_name: "Невиномыск",
+            korobki : 9900,
+            pallets: [
+                8000,
+                8500,
+                9000,
+                9500
             ]
         },
     },
@@ -305,7 +322,9 @@ function get_personal() {
 function get_additional_info() {
     return calc_data["tabs"][7]["value"];
 }
-
+function get_min_sum(){
+    return prices[get_from_city()][get_to_city()]["pallets"].slice(-1)[0] / 10;
+}
 function sum_list(list){
     result = 0
     list.forEach(function (element) {
@@ -330,12 +349,16 @@ function get_input_values(input_list){
     let empty_flag = false;
     let res_values = [];
     input_list.forEach( function (input) {
-        if (input.type == "radio" || input.type == "checkbox" || input.type == "number"){
+        if (input.type == "radio" || input.type == "checkbox" || input.type == "number" || input.type == "text" || input.type == "datetime-local"){
             if (input.checked) {
                 res_values.push(input.value);
             } else if (input.value && input.type == "number"){
                 res_values.push(input.value);
-            } else if (!input.value && input.hasAttribute('required')){
+            } else if (input.value && input.type == "text"){
+                res_values.push(input.value);
+            } else if (input.value && input.type == "datetime-local"){
+                res_values.push(input.value);
+            }else if (!input.value && input.hasAttribute('required')){
                 empty_flag = true;
             }
         } else {
@@ -398,8 +421,8 @@ function set_restrictions(){
     restriction_blocks = document.querySelectorAll("[data-restriction]");
     restriction_blocks.forEach( function (restriction_block) {
         restriction_block.checked = false;
-        console.log(restriction_block.dataset.onlykorobki);
-        console.log(get_otpravlenie_type());
+        
+
         if (restriction_block.dataset.onlykorobki && get_otpravlenie_type() == "pallets"){
             return;
         }
@@ -451,7 +474,7 @@ function set_cities(from_city) {
             let text = document.createElement("p");
             text.textContent = value.rus_name;
             let input = document.createElement("input");
-            input.setAttribute('type', 'radio');
+            input.setAttribute('type', 'checkbox');
             input.setAttribute('name', "where");
             if (calc_data["tabs"][1].length > 0){
                 input.setAttribute('checked');
@@ -463,6 +486,40 @@ function set_cities(from_city) {
         }
     }
 }
+function set_cities_types(){
+    container = document.querySelector(".choosen_cities");
+    container.innerHTML = "";
+
+    get_to_city().forEach( function (city, i) {
+        let text_block = document.createElement("p");
+        let status_image = document.createElement("img");
+        let city_container = document.createElement("div");
+
+        text_block.textContent = prices[get_from_city()][city]["rus_name"];
+
+        status_image.className = "choosen_city_img";
+        status_image.src = no_status;
+
+        city_container.className = "choosen_city";
+
+        city_container.appendChild(text_block);
+        city_container.appendChild(status_image);
+        container.appendChild(city_container)
+
+
+        cities_data[city] = 
+        {
+            "type": null,
+            "types": [],
+            "count": [],
+        };
+    })
+
+    current_where = get_to_city()[0];
+
+    document.getElementById("where_block").textContent = "Текущий город - " + prices[get_from_city()][current_where]["rus_name"];
+}
+
 
 function set_container_types(container){
     container.innerHTML = "";
@@ -593,6 +650,8 @@ function calc_result_price() {
     }
     return result;
 }
+
+
 function add_additional_rows(container, priceblock) {
     get_additional_info().forEach( function (additional) {
         
@@ -627,14 +686,29 @@ function add_additional_rows(container, priceblock) {
         result_row_value.className = "row_value";
         result_row_value.textContent = price + " P";
         result_row.append(result_row_name);
+let priceblock24 = $('*[placeholder="Другая сумма"]');;
+
+        //     console.log(priceblock24);
+
+
+        //      priceblock24.val = +priceblock.textContent + +price;
+                //  console.log(price);
+        // console.log(priceblock24.val);
         result_row.append(result_row_value);
+
+
+
+
         container.append(result_row)    
         priceblock.textContent = +priceblock.textContent + +price
     })
 }
 
-function set_result() {
 
+
+function set_result() {
+    console.log(get_min_sum())
+    let min_price = get_min_sum();
     let fromblock = document.querySelector("[data-fromblock]");
     let toblock = document.querySelector("[data-toblock]");
     let count_blocks = document.querySelectorAll("[data-blockcount]");
@@ -670,7 +744,11 @@ function set_result() {
         blockvolumeall.forEach(element => {
             element.textContent = calc_volume().toFixed(3) + "  м³";
         });
-        priceblock.textContent = calc_result_price().toFixed(3);
+        let result_price_temp = calc_result_price().toFixed(3)
+        if (min_price > result_price_temp){
+            result_price_temp = min_price;
+        }
+        priceblock.textContent = result_price_temp;
 
     } else if (get_otpravlenie_type() == "pallets"){
         rowallname_text = "Всего палет:";
@@ -678,7 +756,11 @@ function set_result() {
         blockvolumeall.forEach(element => {
             element.textContent = calc_max_weight().toFixed(3) + "  кг";
         });
-        priceblock.textContent = calc_result_price_pallets().toFixed(3);
+        let result_price_temp = calc_result_price_pallets().toFixed(3)
+        if (min_price > result_price_temp){
+            result_price_temp = min_price;
+        }
+        priceblock.textContent = result_price_temp;
         
     }
 
@@ -734,6 +816,10 @@ function set_result() {
 
         add_additional_rows(result_container, priceblock);
     }
+
+
+
+    priceblock.textContent = parseFloat(priceblock.textContent).toFixed();
 }
 
 function add_new_box(){
@@ -760,6 +846,8 @@ function check_if_need_to_add_box(){
     return flag;
 }
 function move_next_slide(){
+    console.log(calc_data);
+    console.log(cities_data);
     let active = get_active_tab_index();
     if (calc_data["tabs"].length - 1 == active){
 
@@ -776,6 +864,10 @@ function move_next_slide(){
             //step 1
             if (calc_data["tabs"][active]["set_cities"]){
                 set_cities(calc_data["tabs"][active]["value"]);
+            }
+            //step 2
+            if (calc_data["tabs"][active]["set_where_data"]){
+                set_cities_types(); 
             }
             //step 3
             if (calc_data["tabs"][active]["set_otpravlenie_content"]){
@@ -876,6 +968,7 @@ document.getElementById("last_button").addEventListener("click", function(event)
     get_personal().forEach(function (element) {
         personal += element + ",";
     })
+    console.log(calc_data);
     var containers = "";
     var additional_info = "";
     var result_price = 0;
@@ -913,6 +1006,7 @@ document.getElementById("last_button").addEventListener("click", function(event)
         additional_info += `${row_name} Цена : ${price} Р\n`
         result_price = parseFloat(result_price) + parseFloat(price.toFixed(2));
     })
+    result_price = document.querySelector("[data-resultprice]").textContent;
     // Создать объект XMLHttpRequest
     let xhr = new XMLHttpRequest();
     let formData = new FormData();
@@ -947,5 +1041,6 @@ document.getElementById("last_button").addEventListener("click", function(event)
 
 
     console.log(result_price);
+    console.log(personal);
 
 })

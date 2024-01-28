@@ -1,15 +1,23 @@
 <link rel="stylesheet" href="style.css">
-<section class="calculator">
+<section class="calculator" id="calc_anchor">
     <div class="calc_flex">
         <div class="calc_left_part">
             <div class="top_left_calc">
                 <h3 class="calc_heading">
-                    Расчет стоимости <br> перевозки грузов
+                    Оформить заявку, <br> предварительный расчет
+                    
                 </h3>
                 <span class="error_span" id="error_span"></span>
                 <div class="calc_img">
-                    <img src="/local/templates/main_catalog/img/calc/calc_image.png" alt="Фото калькулятора">
+                    <!-- <img src="/local/templates/main_catalog/img/calc/calc_image.png" alt="Фото калькулятора"> -->
+                    <img src="img/calc_image.png" alt="Фото калькулятора">
                 </div>
+            </div>
+            <h5 id="where_block">
+
+            </h5>
+            <div class="choosen_cities">
+                
             </div>
             <div class="calc_progress_bar">
                 <div class="progress_text">
@@ -44,7 +52,7 @@
             <h3 class="step_heading">
                 Куда доставить ваш груз?            
             </h3>
-            <div class="calc_buttons_row" id="to_cities_container">
+            <div class="calc_buttons_row" id="to_cities_container" style="margin-bottom: 20px;">
             </div>
             <div class="move_buttons_row">
                 <div class="move_button prev" >
@@ -132,12 +140,16 @@
                 Личная информация
             </h3>
             <div id="inputs_container_count">
-                <input class="one_row_input" type="text" name="name[]" placeholder="ИП или ООО" style="margin-bottom: 10px;">
-                <input class="one_row_input" type="text" name="name[]" placeholder="ФИО" style="margin-bottom: 10px;">
-                <input class="one_row_input" type="text" name="name[]" placeholder="Почта" style="margin-bottom: 10px;">
-                <input class="one_row_input mask-phone" type="text" name="name[]" placeholder="+7 (___) ___-__-__" style="margin-bottom: 10px;">
-                <p>Дата и время отгрузки:</p>
-                <input class="one_row_input mask-phone" type="datetime-local" name="name[]" placeholder="" style="margin-bottom: 10px;">
+                <input class="one_row_input" type="text" required name="name[]" placeholder="ИП или ООО" style="margin-bottom: 10px;">
+                <input class="one_row_input" type="text" required name="name[]" placeholder="ФИО" style="margin-bottom: 10px;">
+                <input class="one_row_input" type="text" required name="name[]" placeholder="Почта" style="margin-bottom: 10px;">
+                <input class="one_row_input mask-phone" required type="text" name="name[]" placeholder="+7 (___) ___-__-__" style="margin-bottom: 10px;">
+                <p>Дата и время выгрузки на складе маркетплейса:</p>
+                <input class="one_row_input" id="start-date" type="datetime-local" name="name[]" required placeholder="" style="margin-bottom: 10px;">
+                <p>Адрес забора груза от поставщика</p>
+                <input class="one_row_input" type="text" name="name[]" placeholder="Адрес" style="margin-bottom: 10px;">
+                <p>Комментарий к поставке</p>
+                <input class="one_row_input" type="text" name="name[]" placeholder="Комментарий" style="margin-bottom: 10px;">
             </div>
             <div class="move_buttons_row">
                 <div class="move_button prev" >
@@ -222,7 +234,8 @@
                 Тула, Коледино, Электросталь, Подольск, Белые столбы, Яндекс маркет (Софьино), Озон (Софьино) - 500₽; <br>
                 Краснодар, Шушары - 800₽ <br>
                 Екатеринбург - 750₽; <br>
-                Новосибирск - 1600₽ <br>
+                Новосибирск - 1600₽; <br>
+                Невиномыск - 950₽; <br>
             </p>
             <div class="result_price">
                 Итого: <span class="pink_color"> <span data-resultprice>4 540</span> P</span>
@@ -238,15 +251,19 @@
         </div>
         <div class="calc_right_part" id="result_block">
             <h3 class="step_heading">
-                Резульат
+                Результат
             </h3>
             <div>
                 <p>
-                    Ваш расчет отправлен менеджеру, <br>
-                    ожидайте с вами скоро свяжутся
+                    Если по вашей поставке возникнут вопросы - менеджер с вами свяжется
                 </p>
             </div>
         </div>
     </div>
+</section>
+
+
+</div>
+</div>
 </section>
 <script src="script.js"></script>
