@@ -489,7 +489,7 @@ function set_cities(from_city) {
 function set_cities_types(){
     container = document.querySelector(".choosen_cities");
     container.innerHTML = "";
-
+    cities_data = {}
     get_to_city().forEach( function (city, i) {
         let text_block = document.createElement("p");
         let status_image = document.createElement("img");
@@ -506,15 +506,17 @@ function set_cities_types(){
 
         city_container.appendChild(text_block);
         city_container.appendChild(status_image);
+        city_container.onclick = function () { change_city(city) };
         container.appendChild(city_container)
 
-
-        cities_data[city] = 
-        {
-            "type": null,
-            "types": [],
-            "count": [],
-        };
+        if (!cities_data[city]){
+            cities_data[city] = 
+            {
+                "type": null,
+                "types": [],
+                "count": [],
+            };
+        }
     })
 
     current_where = get_to_city()[0];
@@ -919,16 +921,16 @@ function move_next_slide(){
             //set count of boxes 
             if (calc_data["tabs"][active]["set_count"]){
                 cities_data[current_where]["count"] = get_step_value();
-                if (check_if_cities_is_finished()){
-                    console.log("test")
-                    document.getElementById("where_block").textContent = "Все города заполнены";
-                }
-                else if (check_if_city_is_finished(current_where)){
+                if (check_if_city_is_finished(current_where)){
                     image = document.querySelector("[data-code=" + current_where);
                     image.src = yes_status;
                     current_where = get_next_city();
-                    document.getElementById("where_block").textContent = "Текущий город - " + prices[get_from_city()][current_where]["rus_name"];
-                    step = -3;
+                    if (check_if_cities_is_finished()){
+                        document.getElementById("where_block").textContent = "Все города заполнены";
+                    } else {
+                        document.getElementById("where_block").textContent = "Текущий город - " + prices[get_from_city()][current_where]["rus_name"];
+                        step = -3;
+                    }
                 }
             }
             //step 5
@@ -983,6 +985,23 @@ function move_last_slide(){
         document.getElementById("error_span").textContent = ""; 
     }
 }
+function change_city(code){
+    calc_data["tabs"].forEach( function (tab) { 
+        tab["active"] = false;
+    })
+    calc_data["tabs"][2]["active"] = true;
+    dynamic_bodies.forEach( function (tab, i) {
+        if (i == 2) {
+            tab.classList.add("calc_right_part__active");
+        } else {
+            tab.classList.remove("calc_right_part__active");
+        }
+    }) 
+    
+    current_where = code;
+    document.getElementById("where_block").textContent = "Текущий город - " + prices[get_from_city()][current_where]["rus_name"];
+}
+
 
 next_buttons.forEach(element => {
     element.addEventListener("click", (event) => {
