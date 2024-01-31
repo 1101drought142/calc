@@ -307,14 +307,14 @@ function get_to_city() {
 function get_otpravlenie_type() {
     return calc_data["tabs"][2]["value"];
 }
-function get_container_types() {
-    return calc_data["tabs"][3]["value"];
+function get_container_types(code) {
+    return cities_data[code]["types"];
 }
 function get_box_params() {
     return calc_data["tabs"][4]["value"];
 }
-function get_container_count() {
-    return calc_data["tabs"][5]["value"];
+function get_container_count(code) {
+    return cities_data[code]["count"];
 }
 function get_personal() {
     return calc_data["tabs"][6]["value"];
@@ -322,8 +322,8 @@ function get_personal() {
 function get_additional_info() {
     return calc_data["tabs"][7]["value"];
 }
-function get_min_sum(){
-    return prices[get_from_city()][get_to_city()]["pallets"].slice(-1)[0] / 10;
+function get_min_sum(code){
+    return prices[get_from_city()][code]["pallets"].slice(-1)[0] / 10;
 }
 function sum_list(list){
     result = 0
@@ -398,7 +398,7 @@ function get_active_tab_index(){
 
 function set_prices(container){
     container.innerHTML = "";
-    get_container_types().forEach(function (korobka_type_id) {
+    get_container_types(current_where).forEach(function (korobka_type_id) {
         var temp_korobka = boxes[korobka_type_id];
         var input = document.createElement("input");
         input.className = "one_row_input";
@@ -437,21 +437,21 @@ function set_restrictions(){
             return;
         }
         if (restriction_block.dataset.maxkorobki){
-            if ( +restriction_block.dataset.maxkorobki < sum_list(get_container_count()) ){
+            if ( +restriction_block.dataset.maxkorobki < sum_list(get_container_count(current_where)) ){
                 restriction_block.setAttribute('disabled', '');
             } else {
                 restriction_block.removeAttribute('disabled');    
             }
         }
         if (restriction_block.dataset.minkorobki) {
-            if ( +restriction_block.dataset.minkorobki >= sum_list(get_container_count()) ){
+            if ( +restriction_block.dataset.minkorobki >= sum_list(get_container_count(current_where)) ){
                 restriction_block.setAttribute('disabled', '');
             } else {
                 restriction_block.removeAttribute('disabled');    
             }
         }
         if (restriction_block.dataset.minkorobkicheck) {
-            if ( +restriction_block.dataset.minkorobkicheck <= sum_list(get_container_count()) ){
+            if ( +restriction_block.dataset.minkorobkicheck <= sum_list(get_container_count(current_where)) ){
                 restriction_block.setAttribute('disabled', '');
                 restriction_block.checked = true;
 
@@ -515,6 +515,7 @@ function set_cities_types(){
                 "type": null,
                 "types": [],
                 "count": [],
+                "additional": [],
             };
         }
     })
@@ -569,7 +570,7 @@ function set_container_types(container){
 
 function set_pallet_count(container){
     container.innerHTML = "";
-    get_container_types().forEach(function (korobka_type_id) {
+    get_container_types(current_where).forEach(function (korobka_type_id) {
         var temp_palet = palets[korobka_type_id];
         var input = document.createElement("input");
         input.className = "one_row_input";
@@ -627,10 +628,10 @@ function set_otpravlenie_count_content(){
 }
 
 
-function calc_volume() {
+function calc_volume(city_code) {
     result = 0;
-    id_list = get_container_types();
-    count_list = get_container_count();
+    id_list = get_container_types(city_code);
+    count_list = get_container_count(city_code);
     count_list.forEach(function (element, i) {
         temp_box = boxes[id_list[i]];
         
@@ -641,36 +642,36 @@ function calc_volume() {
     })
     return result;
 }
-function calc_result_price_pallets(){
+function calc_result_price_pallets(city_code){
     result = 0;
-    id_list = get_container_types();
-    count_list = get_container_count();
+    id_list = get_container_types(city_code);
+    count_list = get_container_count(city_code);
     count_list.forEach(function (element, i) {
         temp_box_id = id_list[i];
-        result += element * prices[get_from_city()][get_to_city()]["pallets"][temp_box_id]
+        result += element * prices[get_from_city()][city_code]["pallets"][temp_box_id]
     })
     return result;
 }
-function calc_max_weight(){
+function calc_max_weight(city_code){
     result = 0;
-    id_list = get_container_types();
-    count_list = get_container_count();
+    id_list = get_container_types(city_code);
+    count_list = get_container_count(city_code);
     count_list.forEach(function (element, i) {
         temp_box = palets[id_list[i]];
         result += temp_box["maxweight"] * element
     })
     return result;
 }
-function calc_result_price() {
+function calc_result_price(city_code) {
     result = 0;
-    id_list = get_container_types();
-    count_list = get_container_count();
+    id_list = get_container_types(city_code);
+    count_list = get_container_count(city_code);
     count_list.forEach(function (element, i) {
         temp_box = boxes[id_list[i]];
-        let temp_r = temp_box["volume"] * element * prices[get_from_city()][get_to_city()]["korobki"];
+        let temp_r = temp_box["volume"] * element * prices[get_from_city()][city_code]["korobki"];
         result += temp_r;
     })
-    let max_price = prices[get_from_city()][get_to_city()]["pallets"][0];
+    let max_price = prices[get_from_city()][city_code]["pallets"][0];
     if (result > max_price){
         result = max_price;
     }
@@ -733,8 +734,7 @@ function add_additional_rows(container, priceblock) {
 
 
 function set_result() {
-    console.log(get_min_sum())
-    let min_price = get_min_sum();
+    //
     let fromblock = document.querySelector("[data-fromblock]");
     let toblock = document.querySelector("[data-toblock]");
     let count_blocks = document.querySelectorAll("[data-blockcount]");
@@ -750,11 +750,9 @@ function set_result() {
 
     fromblock.textContent = prices[get_from_city()]["rus_name"];
 
-    toblock.textContent = prices[get_from_city()][get_to_city()]["rus_name"];
+    //toblock.textContent = prices[get_from_city()][get_to_city()]["rus_name"];
 
-    count_blocks.forEach(element => {
-        element.textContent = sum_list(get_container_count())
-    });
+    
     if (get_from_city() == "kazan") {
         document.getElementById("moscow_text").style.display = "none";
         document.getElementById("kazan_text").style.display = "block";
@@ -764,31 +762,39 @@ function set_result() {
     }
     let rowallname_text = "";
     let rowallcount_text = "";
-    if (get_otpravlenie_type() == "boxes") {
-        rowallname_text = "Всего коробов:";
-        rowallcount_text = "Общий объем коробов:";
-        blockvolumeall.forEach(element => {
-            element.textContent = calc_volume().toFixed(3) + "  м³";
+    for (const [key, value] of Object.entries(cities_data)) {
+        count_blocks.forEach(element => {
+            element.textContent = sum_list(get_container_count(key))
         });
-        let result_price_temp = calc_result_price().toFixed(3)
-        if (min_price > result_price_temp){
-            result_price_temp = min_price;
-        }
-        priceblock.textContent = result_price_temp;
+        let min_price = get_min_sum(key);
+        if (value["type"] == "boxes") {
+            rowallname_text = "Всего коробов:";
+            rowallcount_text = "Общий объем коробов:";
+            blockvolumeall.forEach(element => {
+                element.textContent = calc_volume(key).toFixed(3) + "  м³";
+            });
+            let result_price_temp = calc_result_price(key).toFixed(3)
+            if (min_price > result_price_temp){
+                result_price_temp = min_price;
+            }
+            priceblock.textContent = result_price_temp;
 
-    } else if (get_otpravlenie_type() == "pallets"){
-        rowallname_text = "Всего палет:";
-        rowallcount_text = "Общий максимальный вес палет:";
-        blockvolumeall.forEach(element => {
-            element.textContent = calc_max_weight().toFixed(3) + "  кг";
-        });
-        let result_price_temp = calc_result_price_pallets().toFixed(3)
-        if (min_price > result_price_temp){
-            result_price_temp = min_price;
+        } else if (value["type"] == "pallets"){
+            rowallname_text = "Всего палет:";
+            rowallcount_text = "Общий максимальный вес палет:";
+            blockvolumeall.forEach(element => {
+                element.textContent = calc_max_weight(key).toFixed(3) + "  кг";
+            });
+            let result_price_temp = calc_result_price_pallets(key).toFixed(3)
+            if (min_price > result_price_temp){
+                result_price_temp = min_price;
+            }
+            priceblock.textContent = result_price_temp;
+            
         }
-        priceblock.textContent = result_price_temp;
-        
+    
     }
+    
 
     rowallname.forEach(element => {
         element.textContent = rowallname_text;
@@ -816,31 +822,31 @@ function set_result() {
 
     let container_text;
     let container_quanity;
-    get_container_types().forEach( function (element, i) {
-        var result_row = document.createElement("div"); 
-        result_row.className = "result_row result_row__extra_row";
-        var result_row_name = document.createElement("div"); 
-        result_row_name.className = "row_name";
+    // get_container_types().forEach( function (element, i) {
+    //     var result_row = document.createElement("div"); 
+    //     result_row.className = "result_row result_row__extra_row";
+    //     var result_row_name = document.createElement("div"); 
+    //     result_row_name.className = "row_name";
 
-        if (get_otpravlenie_type() == "boxes") {
-            container_text = boxes[element]["name"] + " объём " + (boxes[element]["volume"] * get_container_count()[i]).toFixed(3) + " м³";
-            container_quanity = +get_container_count()[i] + " шт";
-        } else if (get_otpravlenie_type() == "pallets"){
-            container_text = "Паллета " + palets[element]["name"];
-            container_quanity = +get_container_count()[i] + " шт";
-        }
-        result_row_name.textContent = container_text;
-        var result_row_value = document.createElement("div"); 
-        result_row_value.className = "row_value";
-        result_row_value.textContent = container_quanity;
-        result_row.append(result_row_name);
-        result_row.append(result_row_value);
-        result_top_container.append(result_row)    
+    //     if (get_otpravlenie_type() == "boxes") {
+    //         container_text = boxes[element]["name"] + " объём " + (boxes[element]["volume"] * get_container_count()[i]).toFixed(3) + " м³";
+    //         container_quanity = +get_container_count()[i] + " шт";
+    //     } else if (get_otpravlenie_type() == "pallets"){
+    //         container_text = "Паллета " + palets[element]["name"];
+    //         container_quanity = +get_container_count()[i] + " шт";
+    //     }
+    //     result_row_name.textContent = container_text;
+    //     var result_row_value = document.createElement("div"); 
+    //     result_row_value.className = "row_value";
+    //     result_row_value.textContent = container_quanity;
+    //     result_row.append(result_row_name);
+    //     result_row.append(result_row_value);
+    //     result_top_container.append(result_row)    
 
-    })
+    // })
     if (get_additional_info().length != 0){
 
-        add_additional_rows(result_container, priceblock);
+        //add_additional_rows(result_container, priceblock);
     }
 
 
@@ -864,7 +870,7 @@ function add_new_box(){
 
 function check_if_need_to_add_box(){
     let flag = false
-    get_container_types().forEach( function (element) {
+    get_container_types(current_where).forEach( function (element) {
         if (boxes[element].volume == "add_box"){
             flag = true;
         }
@@ -887,36 +893,10 @@ function move_next_slide(){
             } else {
                 calc_data["tabs"][active]["value"] = get_step_value();
             }
-
-
-            //step 1
-            if (calc_data["tabs"][active]["set_cities"]){
-                set_cities(calc_data["tabs"][active]["value"]);
-            }
-            //step 2
-            if (calc_data["tabs"][active]["set_where_data"]){
-                set_cities_types(); 
-            }
             //step 3
             if (calc_data["tabs"][active]["set_otpravlenie_content"]){
                 set_otpravlenie_content();
                 cities_data[current_where]["type"] = get_step_value()[0];
-            }
-            //step 4
-            if (calc_data["tabs"][active]["check_if_need_to_add_new_box"]){
-                if (check_if_need_to_add_box()) {
-                    step = 1;
-                } else {
-                    set_otpravlenie_count_content();
-                    step = 2;
-                }
-                cities_data[current_where]["types"] = get_step_value();
-            }
-            // extra step to add new box 
-            if (calc_data["tabs"][active]["go_back"]){
-                add_new_box();
-                set_otpravlenie_content();
-                step = -1;
             }
             //set count of boxes 
             if (calc_data["tabs"][active]["set_count"]){
@@ -933,6 +913,34 @@ function move_next_slide(){
                     }
                 }
             }
+
+            //step 1
+            if (calc_data["tabs"][active]["set_cities"]){
+                set_cities(calc_data["tabs"][active]["value"]);
+            }
+            //step 2
+            if (calc_data["tabs"][active]["set_where_data"]){
+                set_cities_types(); 
+            }
+            
+            //step 4
+            if (calc_data["tabs"][active]["check_if_need_to_add_new_box"]){
+                cities_data[current_where]["types"] = get_step_value();
+                if (check_if_need_to_add_box()) {
+                    step = 1;
+                } else {
+                    set_otpravlenie_count_content();
+                    step = 2;
+                }
+                
+            }
+            // extra step to add new box 
+            if (calc_data["tabs"][active]["go_back"]){
+                add_new_box();
+                set_otpravlenie_content();
+                step = -1;
+            }
+            
             //step 5
             if (calc_data["tabs"][active]["set_restriction"]){
                 set_restrictions();
@@ -997,7 +1005,7 @@ function change_city(code){
             tab.classList.remove("calc_right_part__active");
         }
     }) 
-    
+
     current_where = code;
     document.getElementById("where_block").textContent = "Текущий город - " + prices[get_from_city()][current_where]["rus_name"];
 }
