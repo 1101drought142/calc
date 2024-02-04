@@ -1,5 +1,5 @@
 let dateInput = document.getElementById("start-date");
-dateInput.min = new Date().toISOString().slice(0,new Date().toISOString().lastIndexOf(":"));
+//dateInput.min = new Date().toISOString().slice(0,new Date().toISOString().lastIndexOf(":"));
 const yes_status = "img/Yes_Check_Circle.svg.png";
 const no_status = "img/istockphoto-1294482883-612x612.jpg";
 var current_where = null;
@@ -103,18 +103,20 @@ var calc_data = {
         },
         {
             active : false,
+            input_name : "additional[]",
+            input_type : "checkbox",
+            value: [],
+            not_necessery: true,
+            renew_box: true,
+        },
+        {
+            active : false,
             input_name : "name[]",
             input_type : "text",
             value: 0,
             set_restriction : true,
-        },
-        {
-            active : false,
-            input_name : "additional[]",
-            input_type : "checkbox",
-            value: [],
             set_result: true,
-            not_necessery: true,
+
         },
         {
             active : false,
@@ -534,7 +536,7 @@ function get_next_city(){
     }
 }   
 function check_if_city_is_finished(code){
-    if (cities_data[code]["type"] && cities_data[code]["count"] && cities_data[code]["types"]){
+    if (cities_data[code]["type"] && cities_data[code]["count"] && cities_data[code]["types"]  && cities_data[code]["additional"]){
         cities_data[code]["is_finished"] = true;
         return true;
     }
@@ -878,7 +880,7 @@ function check_if_need_to_add_box(){
     return flag;
 }
 function move_next_slide(){
-    console.log(calc_data);
+    // console.log(calc_data);
     console.log(cities_data);
     let active = get_active_tab_index();
     if (calc_data["tabs"].length - 1 == active){
@@ -887,7 +889,8 @@ function move_next_slide(){
         
         if (get_step_value().length != 0 || calc_data["tabs"][active]["not_necessery"] == true) {
             var step = 1;
-            
+            console.log(get_step_value())
+            console.log(calc_data["tabs"][active])
             if (calc_data["tabs"][active]["input_type"] == "radio"){
                 calc_data["tabs"][active]["value"] = get_step_value()[0];
             } else {
@@ -898,9 +901,14 @@ function move_next_slide(){
                 set_otpravlenie_content();
                 cities_data[current_where]["type"] = get_step_value()[0];
             }
-            //set count of boxes 
+            //step 5
             if (calc_data["tabs"][active]["set_count"]){
+                set_restrictions();
                 cities_data[current_where]["count"] = get_step_value();
+            }
+            //set count of boxes 
+            if (calc_data["tabs"][active]["renew_box"]){
+                cities_data[current_where]["additional"] = get_step_value();
                 if (check_if_city_is_finished(current_where)){
                     image = document.querySelector("[data-code=" + current_where);
                     image.src = yes_status;
@@ -909,7 +917,7 @@ function move_next_slide(){
                         document.getElementById("where_block").textContent = "Все города заполнены";
                     } else {
                         document.getElementById("where_block").textContent = "Текущий город - " + prices[get_from_city()][current_where]["rus_name"];
-                        step = -3;
+                        step = -4;
                     }
                 }
             }
@@ -932,8 +940,8 @@ function move_next_slide(){
                     set_otpravlenie_count_content();
                     step = 2;
                 }
-                
             }
+            
             // extra step to add new box 
             if (calc_data["tabs"][active]["go_back"]){
                 add_new_box();
@@ -941,10 +949,7 @@ function move_next_slide(){
                 step = -1;
             }
             
-            //step 5
-            if (calc_data["tabs"][active]["set_restriction"]){
-                set_restrictions();
-            }
+           
             //step 6
             if (calc_data["tabs"][active]["set_result"]){
                 set_result();
