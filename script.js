@@ -536,6 +536,9 @@ function get_next_city(){
         }
     }
 }   
+function get_first_city(){
+    return Object.keys(cities_data)[0];
+}
 function check_if_city_is_finished(code){
     if (cities_data[code]["type"] && cities_data[code]["count"] && cities_data[code]["types"]  && cities_data[code]["additional"]){
         cities_data[code]["is_finished"] = true;
@@ -996,6 +999,10 @@ function move_last_slide(){
     let active = get_active_tab_index();
     if (0 == active){
     } else {
+        if (!current_where){
+            current_where = get_first_city();
+            document.getElementById("where_block").textContent = "Текущий город - " + prices[get_from_city()][current_where]["rus_name"];
+        }
         var step = 1;
         
         if (calc_data["tabs"][active - step]["go_back"]){
@@ -1145,4 +1152,18 @@ document.getElementById("last_button").addEventListener("click", function(event)
     } else {
         set_result();
     }
+})
+
+
+let zabor_po_gorodu = document.getElementById("zabor_po_gorodu");
+let zabor_po_gorodu_text = document.getElementById("zabor_po_gorodu_text");
+
+zabor_po_gorodu.addEventListener("click", (event) => {
+    console.log(event.target)
+    if (event.target.checked){
+        zabor_po_gorodu_text.style.display = "block";
+    } else {
+        zabor_po_gorodu_text.style.display = "none";
+    }
+    
 })
