@@ -321,8 +321,8 @@ function get_container_count(code) {
 function get_personal() {
     return calc_data["tabs"][6]["value"];
 }
-function get_additional_info() {
-    return calc_data["tabs"][7]["value"];
+function get_additional_info(code) {
+    return cities_data[code]["additional"];
 }
 function get_min_sum(code){
     return prices[get_from_city()][code]["pallets"].slice(-1)[0] / 10;
@@ -518,6 +518,7 @@ function set_cities_types(){
                 "types": [],
                 "count": [],
                 "additional": [],
+                "result_shown": false,
             };
         }
     })
@@ -681,8 +682,8 @@ function calc_result_price(city_code) {
 }
 
 
-function add_additional_rows(container, priceblock) {
-    get_additional_info().forEach( function (additional) {
+function add_additional_rows(container, priceblock, code) {
+    get_additional_info(code).forEach( function (additional) {
         
         if (additional == "small_dostavka"){
             var row_name = "Доставка по городу";
@@ -693,14 +694,14 @@ function add_additional_rows(container, priceblock) {
         } else if (additional == "palletirovanie") {
             var row_name = "Паллетирование";
             if (get_otpravlenie_type() == "pallets"){
-                var price = 350 * +sum_list(get_container_count());
+                var price = 350 * +sum_list(get_container_count(code));
             } else {
                 var price = 350;
             }
         } else if (additional == "pallet") {
             var row_name = "Паллета";
             if (get_otpravlenie_type() == "pallets"){
-                var price = 250 * +sum_list(get_container_count());
+                var price = 250 * +sum_list(get_container_count(code));
             } else {
                 var price = 250;
             }
@@ -715,7 +716,7 @@ function add_additional_rows(container, priceblock) {
         result_row_value.className = "row_value";
         result_row_value.textContent = price + " P";
         result_row.append(result_row_name);
-        let priceblock24 = $('*[placeholder="Другая сумма"]');;
+        //let priceblock24 = $('*[placeholder="Другая сумма"]');;
 
         //     console.log(priceblock24);
 
@@ -737,6 +738,17 @@ function add_additional_rows(container, priceblock) {
 
 function set_result() {
     //
+    let current_city = null;
+    let current_city_data = null;
+    for (const [key, value] of Object.entries(cities_data)) {
+        if (value["result_shown"] == false){
+            current_city = key;
+            current_city_data = value;
+            cities_data[key]["result_shown"] = true;
+            break;
+        }
+    }
+    console.log(current_city)
     let fromblock = document.querySelector("[data-fromblock]");
     let toblock = document.querySelector("[data-toblock]");
     let count_blocks = document.querySelectorAll("[data-blockcount]");
@@ -752,7 +764,7 @@ function set_result() {
 
     fromblock.textContent = prices[get_from_city()]["rus_name"];
 
-    //toblock.textContent = prices[get_from_city()][get_to_city()]["rus_name"];
+    toblock.textContent = prices[get_from_city()][current_city]["rus_name"];
 
     
     if (get_from_city() == "kazan") {
@@ -764,38 +776,38 @@ function set_result() {
     }
     let rowallname_text = "";
     let rowallcount_text = "";
-    for (const [key, value] of Object.entries(cities_data)) {
-        count_blocks.forEach(element => {
-            element.textContent = sum_list(get_container_count(key))
-        });
-        let min_price = get_min_sum(key);
-        if (value["type"] == "boxes") {
-            rowallname_text = "Всего коробов:";
-            rowallcount_text = "Общий объем коробов:";
-            blockvolumeall.forEach(element => {
-                element.textContent = calc_volume(key).toFixed(3) + "  м³";
-            });
-            let result_price_temp = calc_result_price(key).toFixed(3)
-            if (min_price > result_price_temp){
-                result_price_temp = min_price;
-            }
-            priceblock.textContent = result_price_temp;
-
-        } else if (value["type"] == "pallets"){
-            rowallname_text = "Всего палет:";
-            rowallcount_text = "Общий максимальный вес палет:";
-            blockvolumeall.forEach(element => {
-                element.textContent = calc_max_weight(key).toFixed(3) + "  кг";
-            });
-            let result_price_temp = calc_result_price_pallets(key).toFixed(3)
-            if (min_price > result_price_temp){
-                result_price_temp = min_price;
-            }
-            priceblock.textContent = result_price_temp;
-            
-        }
     
+    count_blocks.forEach(element => {
+        element.textContent = sum_list(get_container_count(current_city))
+    });
+    let min_price = get_min_sum(current_city);
+    if (cities_data[current_city]["type"] == "boxes") {
+        rowallname_text = "Всего коробов:";
+        rowallcount_text = "Общий объем коробов:";
+        blockvolumeall.forEach(element => {
+            element.textContent = calc_volume(current_city).toFixed(3) + "  м³";
+        });
+        let result_price_temp = calc_result_price(current_city).toFixed(3)
+        if (min_price > result_price_temp){
+            result_price_temp = min_price;
+        }
+        priceblock.textContent = result_price_temp;
+
+    } else if (cities_data[current_city]["type"] == "pallets"){
+        rowallname_text = "Всего палет:";
+        rowallcount_text = "Общий максимальный вес палет:";
+        blockvolumeall.forEach(element => {
+            element.textContent = calc_max_weight(current_city).toFixed(3) + "  кг";
+        });
+        let result_price_temp = calc_result_price_pallets(current_city).toFixed(3)
+        if (min_price > result_price_temp){
+            result_price_temp = min_price;
+        }
+        priceblock.textContent = result_price_temp;
+        
     }
+
+
     
 
     rowallname.forEach(element => {
@@ -824,31 +836,31 @@ function set_result() {
 
     let container_text;
     let container_quanity;
-    // get_container_types().forEach( function (element, i) {
-    //     var result_row = document.createElement("div"); 
-    //     result_row.className = "result_row result_row__extra_row";
-    //     var result_row_name = document.createElement("div"); 
-    //     result_row_name.className = "row_name";
+    get_container_types(current_city).forEach( function (element, i) {
+        var result_row = document.createElement("div"); 
+        result_row.className = "result_row result_row__extra_row";
+        var result_row_name = document.createElement("div"); 
+        result_row_name.className = "row_name";
 
-    //     if (get_otpravlenie_type() == "boxes") {
-    //         container_text = boxes[element]["name"] + " объём " + (boxes[element]["volume"] * get_container_count()[i]).toFixed(3) + " м³";
-    //         container_quanity = +get_container_count()[i] + " шт";
-    //     } else if (get_otpravlenie_type() == "pallets"){
-    //         container_text = "Паллета " + palets[element]["name"];
-    //         container_quanity = +get_container_count()[i] + " шт";
-    //     }
-    //     result_row_name.textContent = container_text;
-    //     var result_row_value = document.createElement("div"); 
-    //     result_row_value.className = "row_value";
-    //     result_row_value.textContent = container_quanity;
-    //     result_row.append(result_row_name);
-    //     result_row.append(result_row_value);
-    //     result_top_container.append(result_row)    
+        if (get_otpravlenie_type() == "boxes") {
+            container_text = boxes[element]["name"] + " объём " + (boxes[element]["volume"] * get_container_count(current_city)[i]).toFixed(3) + " м³";
+            container_quanity = +get_container_count(current_city)[i] + " шт";
+        } else if (get_otpravlenie_type() == "pallets"){
+            container_text = "Паллета " + palets[element]["name"];
+            container_quanity = +get_container_count(current_city)[i] + " шт";
+        }
+        result_row_name.textContent = container_text;
+        var result_row_value = document.createElement("div"); 
+        result_row_value.className = "row_value";
+        result_row_value.textContent = container_quanity;
+        result_row.append(result_row_name);
+        result_row.append(result_row_value);
+        result_top_container.append(result_row)    
 
-    // })
-    if (get_additional_info().length != 0){
+    })
+    if (get_additional_info(current_city).length != 0){
 
-        //add_additional_rows(result_container, priceblock);
+        add_additional_rows(result_container, priceblock, current_city);
     }
 
 
@@ -1029,92 +1041,101 @@ prev_buttons.forEach(element => {
 });
 
 document.getElementById("last_button").addEventListener("click", function(event) {
-    dynamic_bodies.forEach( function (tab, i) {
-        tab.classList.remove("calc_right_part__active");
-    })
-    document.getElementById("result_block").classList.add("calc_right_part__active");
-
-    from_city = prices[get_from_city()]["rus_name"];
-    to_city = prices[get_from_city()][get_to_city()]["rus_name"]
-    
-    personal = "";
-
-    get_personal().forEach(function (element) {
-        personal += element + ",";
-    })
-    console.log(calc_data);
-    var containers = "";
-    var additional_info = "";
-    var result_price = 0;
-    if (get_otpravlenie_type() == "boxes") {
-        get_container_types().forEach(function (korobka_type_id, i) {
-            var temp_korobka = boxes[korobka_type_id];
-            containers += `${temp_korobka["name"]}; Обьем : ${temp_korobka["volume"]} м2; Количество : ${get_container_count()[i]}; Цена за доставку коробок : ${(temp_korobka["volume"] * get_container_count()[i] * prices[get_from_city()][get_to_city()]["korobki"]).toFixed(3) } Р \n`;
-        })
-        var result_price = parseFloat(calc_result_price().toFixed(3));
-
-    } else if (get_otpravlenie_type() == "pallets"){
-        get_container_types().forEach(function (korobka_type_id, i) {
-            var temp_pallet = palets[korobka_type_id];
-            containers += `Паллет : ${temp_pallet["name"]}; Количество : ${get_container_count()[i]}; Цена : ${(+get_container_count()[i] * +prices[get_from_city()][get_to_city()]["pallets"][korobka_type_id]).toFixed(2)} Р \n`;
-        })
-        var result_price = parseFloat(calc_result_price_pallets().toFixed(3));
-
+    let flag = true;
+    for (const [key, value] of Object.entries(cities_data)) {
+        if (value["result_shown"] == false){
+            flag = false;
+        }
     }
+    if (flag) {
+        dynamic_bodies.forEach( function (tab, i) {
+            tab.classList.remove("calc_right_part__active");
+        })
+        document.getElementById("result_block").classList.add("calc_right_part__active");
 
-    get_additional_info().forEach( function (additional) {
-    
-        if (additional == "small_dostavka"){
-            var row_name = "Доставка по городу";
-            var price = 500;
-        } else if (additional == "big_dostavka") {
-            var row_name = "Доставка по городу";
-            var price = 1000;
-        } else if (additional == "palletirovanie") {
-            var row_name = "Паллетирование";
-            var price = 350;
-        } else if (additional == "pallet") {
-            var row_name = "Паллета";
-            var price = 250;
+        from_city = prices[get_from_city()]["rus_name"];
+        to_city = prices[get_from_city()][get_to_city()]["rus_name"]
+        
+        personal = "";
+
+        get_personal().forEach(function (element) {
+            personal += element + ",";
+        })
+        console.log(calc_data);
+        var containers = "";
+        var additional_info = "";
+        var result_price = 0;
+        if (get_otpravlenie_type() == "boxes") {
+            get_container_types().forEach(function (korobka_type_id, i) {
+                var temp_korobka = boxes[korobka_type_id];
+                containers += `${temp_korobka["name"]}; Обьем : ${temp_korobka["volume"]} м2; Количество : ${get_container_count()[i]}; Цена за доставку коробок : ${(temp_korobka["volume"] * get_container_count()[i] * prices[get_from_city()][get_to_city()]["korobki"]).toFixed(3) } Р \n`;
+            })
+            var result_price = parseFloat(calc_result_price().toFixed(3));
+
+        } else if (get_otpravlenie_type() == "pallets"){
+            get_container_types().forEach(function (korobka_type_id, i) {
+                var temp_pallet = palets[korobka_type_id];
+                containers += `Паллет : ${temp_pallet["name"]}; Количество : ${get_container_count()[i]}; Цена : ${(+get_container_count()[i] * +prices[get_from_city()][get_to_city()]["pallets"][korobka_type_id]).toFixed(2)} Р \n`;
+            })
+            var result_price = parseFloat(calc_result_price_pallets().toFixed(3));
+
         }
-        additional_info += `${row_name} Цена : ${price} Р\n`
-        result_price = parseFloat(result_price) + parseFloat(price.toFixed(2));
-    })
-    result_price = document.querySelector("[data-resultprice]").textContent;
-    // Создать объект XMLHttpRequest
-    let xhr = new XMLHttpRequest();
-    let formData = new FormData();
-    xhr.open('POST', 'send_message_calc.php');
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState === XMLHttpRequest.DONE) {
-            if (xhr.status === 200) {
-                // Обработать успешный ответ
-                let response = xhr.responseText;
-                if (response.success === false) {
-                    console.log("error")
-                } else {
-                    // Перенаправить на другую страницу
-                    console.log("success")
-                    console.log(response)
-                }
-            } else {
-                // Обработать ошибку запроса
-                console.error('Ошибка запроса:', xhr.status);
+
+        get_additional_info().forEach( function (additional) {
+        
+            if (additional == "small_dostavka"){
+                var row_name = "Доставка по городу";
+                var price = 500;
+            } else if (additional == "big_dostavka") {
+                var row_name = "Доставка по городу";
+                var price = 1000;
+            } else if (additional == "palletirovanie") {
+                var row_name = "Паллетирование";
+                var price = 350;
+            } else if (additional == "pallet") {
+                var row_name = "Паллета";
+                var price = 250;
             }
-        }
-    };
-    formData.append("from_city", from_city);
-    formData.append("to_city", to_city);
-    formData.append("result_price", result_price);
-    formData.append("personal", personal);
-    formData.append("containers", containers);
-    formData.append("additional_info", additional_info);
-    formData.append("type", get_otpravlenie_type());
-    // Отправить данные формы
-    xhr.send(formData);
+            additional_info += `${row_name} Цена : ${price} Р\n`
+            result_price = parseFloat(result_price) + parseFloat(price.toFixed(2));
+        })
+        result_price = document.querySelector("[data-resultprice]").textContent;
+        // Создать объект XMLHttpRequest
+        let xhr = new XMLHttpRequest();
+        let formData = new FormData();
+        xhr.open('POST', 'send_message_calc.php');
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    // Обработать успешный ответ
+                    let response = xhr.responseText;
+                    if (response.success === false) {
+                        console.log("error")
+                    } else {
+                        // Перенаправить на другую страницу
+                        console.log("success")
+                        console.log(response)
+                    }
+                } else {
+                    // Обработать ошибку запроса
+                    console.error('Ошибка запроса:', xhr.status);
+                }
+            }
+        };
+        formData.append("from_city", from_city);
+        formData.append("to_city", to_city);
+        formData.append("result_price", result_price);
+        formData.append("personal", personal);
+        formData.append("containers", containers);
+        formData.append("additional_info", additional_info);
+        formData.append("type", get_otpravlenie_type());
+        // Отправить данные формы
+        xhr.send(formData);
 
 
-    console.log(result_price);
-    console.log(personal);
-
+        console.log(result_price);
+        console.log(personal);
+    } else {
+        set_result();
+    }
 })
