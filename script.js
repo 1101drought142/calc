@@ -748,7 +748,14 @@ function set_result() {
             break;
         }
     }
-    console.log(current_city)
+    let button_name = "Оформить";
+    for (const [key, value] of Object.entries(cities_data)) {
+        if (value["result_shown"] == false){
+            button_name = "Далее";
+            break;
+        }
+    }
+    document.querySelector("#last_button").textContent = button_name;
     let fromblock = document.querySelector("[data-fromblock]");
     let toblock = document.querySelector("[data-toblock]");
     let count_blocks = document.querySelectorAll("[data-blockcount]");
