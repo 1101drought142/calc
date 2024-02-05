@@ -306,7 +306,7 @@ function get_from_city() {
 function get_to_city() {
     return calc_data["tabs"][1]["value"];
 }
-function get_otpravlenie_type() {
+function get_otpravlenie_type(code) {
     return calc_data["tabs"][2]["value"];
 }
 function get_container_types(code) {
@@ -530,7 +530,6 @@ function set_cities_types(){
 
 function get_next_city(){
     for (const [key, value] of Object.entries(cities_data)) {
-        console.log(key, value)
         if (!value["is_finished"]){
             return key; 
         }
@@ -641,8 +640,6 @@ function calc_volume(city_code) {
     count_list.forEach(function (element, i) {
         temp_box = boxes[id_list[i]];
         
-        console.log(element)
-        console.log(temp_box["volume"])
 
         result += temp_box["volume"] * element
     })
@@ -903,7 +900,6 @@ function check_if_need_to_add_box(){
 }
 function move_next_slide(){
     // console.log(calc_data);
-    console.log(cities_data);
     let active = get_active_tab_index();
     if (calc_data["tabs"].length - 1 == active){
 
@@ -911,23 +907,23 @@ function move_next_slide(){
         
         if (get_step_value().length != 0 || calc_data["tabs"][active]["not_necessery"] == true) {
             var step = 1;
-            console.log(get_step_value())
-            console.log(calc_data["tabs"][active])
             if (calc_data["tabs"][active]["input_type"] == "radio"){
                 calc_data["tabs"][active]["value"] = get_step_value()[0];
             } else {
                 calc_data["tabs"][active]["value"] = get_step_value();
+            }
+            //step 5
+            if (calc_data["tabs"][active]["set_count"]){
+                cities_data[current_where]["count"] = get_step_value();
+                set_restrictions();
+                
             }
             //step 3
             if (calc_data["tabs"][active]["set_otpravlenie_content"]){
                 set_otpravlenie_content();
                 cities_data[current_where]["type"] = get_step_value()[0];
             }
-            //step 5
-            if (calc_data["tabs"][active]["set_count"]){
-                set_restrictions();
-                cities_data[current_where]["count"] = get_step_value();
-            }
+            
             //set count of boxes 
             if (calc_data["tabs"][active]["renew_box"]){
                 cities_data[current_where]["additional"] = get_step_value();
@@ -1068,52 +1064,61 @@ document.getElementById("last_button").addEventListener("click", function(event)
         document.getElementById("result_block").classList.add("calc_right_part__active");
 
         from_city = prices[get_from_city()]["rus_name"];
-        to_city = prices[get_from_city()][get_to_city()]["rus_name"]
-        
+        let to_city = "";
+        for (const [key, value] of Object.entries(cities_data)) {
+            to_city += " " + prices[get_from_city()][key]["rus_name"]
+        }
         personal = "";
 
         get_personal().forEach(function (element) {
             personal += element + ",";
         })
-        console.log(calc_data);
         var containers = "";
         var additional_info = "";
         var result_price = 0;
-        if (get_otpravlenie_type() == "boxes") {
-            get_container_types().forEach(function (korobka_type_id, i) {
-                var temp_korobka = boxes[korobka_type_id];
-                containers += `${temp_korobka["name"]}; Обьем : ${temp_korobka["volume"]} м2; Количество : ${get_container_count()[i]}; Цена за доставку коробок : ${(temp_korobka["volume"] * get_container_count()[i] * prices[get_from_city()][get_to_city()]["korobki"]).toFixed(3) } Р \n`;
-            })
-            var result_price = parseFloat(calc_result_price().toFixed(3));
+        for (const [key, value] of Object.entries(cities_data)) {
+            containers += `${prices[get_from_city()][key]["rus_name"]}: \n`
+            if (cities_data[key]["type"] == "boxes") {
+                get_container_types(key).forEach(function (korobka_type_id, i) {
+                    var temp_korobka = boxes[korobka_type_id];
+                    containers += `${temp_korobka["name"]}; Обьем : ${temp_korobka["volume"]} м2; Количество : ${get_container_count(key)[i]}; Цена за доставку коробок : ${(temp_korobka["volume"] * get_container_count(key)[i] * prices[get_from_city()][key]["korobki"]).toFixed(3) } Р \n`;
+                })
+                result_price += parseFloat(calc_result_price(key).toFixed(3));
 
-        } else if (get_otpravlenie_type() == "pallets"){
-            get_container_types().forEach(function (korobka_type_id, i) {
-                var temp_pallet = palets[korobka_type_id];
-                containers += `Паллет : ${temp_pallet["name"]}; Количество : ${get_container_count()[i]}; Цена : ${(+get_container_count()[i] * +prices[get_from_city()][get_to_city()]["pallets"][korobka_type_id]).toFixed(2)} Р \n`;
-            })
-            var result_price = parseFloat(calc_result_price_pallets().toFixed(3));
+            } else if (cities_data[key]["type"] == "pallets"){
+                get_container_types(key).forEach(function (korobka_type_id, i) {
+                    var temp_pallet = palets[korobka_type_id];
+                    containers += `Паллет : ${temp_pallet["name"]}; Количество : ${get_container_count(key)[i]}; Цена : ${(+get_container_count(key)[i] * +prices[get_from_city()][key]["pallets"][korobka_type_id]).toFixed(2)} Р \n`;
+                })
+                result_price += parseFloat(calc_result_price_pallets(key).toFixed(3));
 
+            }
+        }
+        for (const [key, value] of Object.entries(cities_data)) {
+            additional_info += `${prices[get_from_city()][key]["rus_name"]}: \n`
+            get_additional_info(key).forEach( function (additional) {
+            
+                if (additional == "small_dostavka"){
+                    var row_name = "Доставка по городу";
+                    var price = 500;
+                } else if (additional == "big_dostavka") {
+                    var row_name = "Доставка по городу";
+                    var price = 1000;
+                } else if (additional == "palletirovanie") {
+                    var row_name = "Паллетирование";
+                    var price = 350;
+                } else if (additional == "pallet") {
+                    var row_name = "Паллета";
+                    var price = 250;
+                }
+                additional_info += `${row_name} Цена : ${price} Р\n`
+                result_price = parseFloat(result_price) + parseFloat(price.toFixed(2));
+            })
         }
 
-        get_additional_info().forEach( function (additional) {
-        
-            if (additional == "small_dostavka"){
-                var row_name = "Доставка по городу";
-                var price = 500;
-            } else if (additional == "big_dostavka") {
-                var row_name = "Доставка по городу";
-                var price = 1000;
-            } else if (additional == "palletirovanie") {
-                var row_name = "Паллетирование";
-                var price = 350;
-            } else if (additional == "pallet") {
-                var row_name = "Паллета";
-                var price = 250;
-            }
-            additional_info += `${row_name} Цена : ${price} Р\n`
-            result_price = parseFloat(result_price) + parseFloat(price.toFixed(2));
-        })
-        result_price = document.querySelector("[data-resultprice]").textContent;
+
+
+        //result_price = document.querySelector("[data-resultprice]").textContent;
         // Создать объект XMLHttpRequest
         let xhr = new XMLHttpRequest();
         let formData = new FormData();
@@ -1124,11 +1129,10 @@ document.getElementById("last_button").addEventListener("click", function(event)
                     // Обработать успешный ответ
                     let response = xhr.responseText;
                     if (response.success === false) {
-                        console.log("error")
+
                     } else {
                         // Перенаправить на другую страницу
-                        console.log("success")
-                        console.log(response)
+
                     }
                 } else {
                     // Обработать ошибку запроса
@@ -1142,13 +1146,11 @@ document.getElementById("last_button").addEventListener("click", function(event)
         formData.append("personal", personal);
         formData.append("containers", containers);
         formData.append("additional_info", additional_info);
-        formData.append("type", get_otpravlenie_type());
+        //formData.append("type", get_otpravlenie_type());
         // Отправить данные формы
         xhr.send(formData);
 
 
-        console.log(result_price);
-        console.log(personal);
     } else {
         set_result();
     }
@@ -1159,7 +1161,6 @@ let zabor_po_gorodu = document.getElementById("zabor_po_gorodu");
 let zabor_po_gorodu_text = document.getElementById("zabor_po_gorodu_text");
 
 zabor_po_gorodu.addEventListener("click", (event) => {
-    console.log(event.target)
     if (event.target.checked){
         zabor_po_gorodu_text.style.display = "block";
     } else {
